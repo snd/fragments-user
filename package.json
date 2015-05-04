@@ -1,0 +1,44 @@
+{
+  "name": "fragments-user",
+  "version": "1.0.0-alpha.1",
+  "description": "",
+  "keywords": [
+  ],
+  "homepage": "http://github.com/snd/fragments-user",
+  "author": {
+    "name": "Maximilian Krüger",
+    "email": "kruemaxi@gmail.com",
+    "url": "http://github.com/snd"
+  },
+  "bugs": {
+    "url": "http://github.com/snd/fragments-user/issues",
+    "email": "kruemaxi@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/snd/fragments-user.git"
+  },
+  "licenses": {
+    "type": "MIT",
+    "url": "git://github.com/snd/fragments-user/LICENSE"
+  },
+  "engines": {
+    "node": ">=0.12.0"
+  },
+  "dependencies": {
+    "fragments": "0.2.2",
+    "siv": "1.0.0-alpha.1",
+    "faker": "2.1.2"
+  },
+  "devDependencies": {
+    "coffee-script": "1.9.2",
+    "nodeunit": "0.9.1"
+  },
+  "scripts": {
+    "compile": "node_modules/coffee-script/bin/coffee --bare --compile --output lib src",
+    "prepublish": "npm run compile",
+    "pretest": "npm run compile",
+    "test": "node_modules/nodeunit/bin/nodeunit test/*"
+  },
+  "main": "lib/fragments-user"
+}

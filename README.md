@@ -1,11 +1,14 @@
-# fragments-user (alpha, work in progress)
-
-**fragments for public and protected user APIs**
+# fragments-user
 
 [![NPM Package](https://img.shields.io/npm/v/fragments-user.svg?style=flat)](https://www.npmjs.org/package/fragments-user)
 [![Build Status](https://travis-ci.org/snd/fragments-user.svg?branch=master)](https://travis-ci.org/snd/fragments-user/branches)
 [![Dependencies](https://david-dm.org/snd/fragments-user.svg)](https://david-dm.org/snd/fragments-user)
 
+**have a token-auth protected API running within minutes with [fragments](https://github.com/snd/fragments)**
+
+*work in progress. documentation soon.*
+
+<!--
 ### random copy ideas
 
 takes care of ... so you can ...
@@ -55,5 +58,7 @@ also some backoffice tools
 - replace cockpit by that name
 
 ### requires the following env vars to be set
+
+-->
 
 ## [license: MIT](LICENSE)

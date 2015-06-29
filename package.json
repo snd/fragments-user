@@ -1,8 +1,15 @@
 {
   "name": "fragments-user",
   "version": "1.0.0-alpha.1",
-  "description": "",
+  "description": "have a token-auth protected API running within minutes with fragments",
   "keywords": [
+    "auth",
+    "rest",
+    "api",
+    "jwt",
+    "token",
+    "fragments",
+    "user"
   ],
   "homepage": "http://github.com/snd/fragments-user",
   "author": {
@@ -26,19 +33,21 @@
     "node": ">=0.12.0"
   },
   "dependencies": {
-    "fragments": "0.2.2",
+    "fragments": "1.0.0-beta.1",
+    "fragments-postgres": "1.0.0-beta.1",
     "siv": "1.0.0-alpha.1",
     "faker": "2.1.2"
   },
   "devDependencies": {
-    "coffee-script": "1.9.2",
-    "nodeunit": "0.9.1"
+    "coffee-script": "1.9.3",
+    "nodeunit": "0.9.1",
+    "hinoki": "1.0.0-rc.1"
   },
   "scripts": {
-    "compile": "node_modules/coffee-script/bin/coffee --bare --compile --output lib src",
+    "compile": "coffee --bare --compile --output lib src",
     "prepublish": "npm run compile",
     "pretest": "npm run compile",
-    "test": "node_modules/nodeunit/bin/nodeunit test/*"
+    "test": "nodeunit test/*.coffee"
   },
   "main": "lib/fragments-user"
 }

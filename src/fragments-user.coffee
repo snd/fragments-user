@@ -1,5 +1,3 @@
-fragments = require 'fragments'
+hinoki = require 'hinoki'
 
-module.exports =
-  application: fragments.load './application'
-  request: fragments.load './request'
+module.exports = hinoki.source(__dirname + '/factories')

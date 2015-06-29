@@ -1,0 +1,19 @@
+language: node_js
+node_js:
+    - "0.12"
+    - iojs
+script: npm test
+env:
+  global:
+    - PORT=8080
+    - BASE_URL="http://localhost:$PORT"
+    - STATIC_PATH="static"
+    - MIGRATION_PATH="migrations"
+    - POSTGRES_DATABASE='fragments_user'
+    - DATABASE_URL="postgres://localhost:5432/$POSTGRES_DATABASE"
+    - POSTGRES_POOL_SIZE=40
+    - BCRYPT_COST=10
+    - JWT_ENCRYPTION_PASSWORD='super secret jwt encryption password'
+    - JWT_SIGNING_SECRET='super secret jwt signing secret'
+addons:
+  postgresql: "9.3"

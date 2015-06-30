@@ -27,14 +27,14 @@ module.exports.command_users = (
             console.log "no user with id `#{optionalId}`"
           console.log 'OK'
           return this.results
-module.exports.command_users.$help = "[optional-user-id] - show all users or just the user with `optional-user-id` (if given)"
+module.exports.command_users.__help = "[optional-user-id] - show all users or just the user with `optional-user-id` (if given)"
 
 module.exports.command_users_insert = (
   APPLICATION
 ) ->
   (name, email, password) ->
     unless name? and email? and password?
-      console.log "Usage: ... #{module.exports.command_users_insert.$help}"
+      console.log "Usage: ... #{module.exports.command_users_insert.__help}"
       return
     APPLICATION (
       insertUser
@@ -57,14 +57,14 @@ module.exports.command_users_insert = (
           console.log this.inserted
           console.log 'OK'
           return this.inserted
-module.exports.command_users_insert.$help = '{name} {email} {password} - insert user'
+module.exports.command_users_insert.__help = '{name} {email} {password} - insert user'
 
 module.exports.command_users_delete = (
   APPLICATION
 ) ->
   (id) ->
     unless id?
-      console.log "Usage: ... #{module.exports.command_users_delete.$help}"
+      console.log "Usage: ... #{module.exports.command_users_delete.__help}"
       return
     APPLICATION (
       deleteUserWhereId
@@ -85,14 +85,14 @@ module.exports.command_users_delete = (
             console.log "no user with id `#{id}`"
           console.log 'OK'
           return this.user
-module.exports.command_users_delete.$help = "{user-id} - delete user with `user-id`"
+module.exports.command_users_delete.__help = "{user-id} - delete user with `user-id`"
 
 module.exports.command_rights = (
   APPLICATION
 ) ->
   (id) ->
     unless id?
-      console.log "Usage: ... #{module.exports.command_rights.$help}"
+      console.log "Usage: ... #{module.exports.command_rights.__help}"
       return
     APPLICATION (
       firstUserWhereId
@@ -116,14 +116,14 @@ module.exports.command_rights = (
             console.log "no user with id `#{id}`"
             console.log 'OK'
             return null
-module.exports.command_rights.$help = "{user-id} - list the rights of user with `user-id`"
+module.exports.command_rights.__help = "{user-id} - list the rights of user with `user-id`"
 
 module.exports.command_rights_insert = (
   APPLICATION
 ) ->
   (id, right) ->
     unless id? and right?
-      console.log "Usage: ... #{module.exports.command_rights_insert.$help}"
+      console.log "Usage: ... #{module.exports.command_rights_insert.__help}"
       return
 
     APPLICATION (
@@ -145,14 +145,14 @@ module.exports.command_rights_insert = (
             console.log "no user with id `#{id}` or user already has right `#{right}`"
           console.log 'OK'
           return this.user
-module.exports.command_rights_insert.$help = "{user-id} {right} - grant `right` to user with `id`"
+module.exports.command_rights_insert.__help = "{user-id} {right} - grant `right` to user with `id`"
 
 module.exports.command_rights_delete = (
   APPLICATION
 ) ->
   (id, right) ->
     unless id? and right?
-      console.log "Usage: ... #{module.exports.command_rights_delete.$help}"
+      console.log "Usage: ... #{module.exports.command_rights_delete.__help}"
       return
 
     APPLICATION (
@@ -174,14 +174,14 @@ module.exports.command_rights_delete = (
             console.log "no user with id `#{id}` or user already doesn't have right `#{right}`"
           console.log 'OK'
           return this.user
-module.exports.command_rights_delete.$help = "{user-id} {right} - revoke `right` from user with `id`"
+module.exports.command_rights_delete.__help = "{user-id} {right} - revoke `right` from user with `id`"
 
 module.exports.command_fake_users = (
   APPLICATION
 ) ->
   (count) ->
     printUsage = ->
-      console.log "Usage: ... #{module.exports.command_fake_users.$help}"
+      console.log "Usage: ... #{module.exports.command_fake_users.__help}"
     unless count?
       printUsage()
       return
@@ -204,4 +204,4 @@ module.exports.command_fake_users = (
         .then ->
           console.log 'OK'
           return this.users
-module.exports.command_fake_users.$help = "{count} - insert `count` fake users"
+module.exports.command_fake_users.__help = "{count} - insert `count` fake users"

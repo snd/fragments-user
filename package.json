@@ -33,15 +33,15 @@
     "node": ">=0.12.0"
   },
   "dependencies": {
-    "hinoki": "1.0.0-rc.1",
+    "hinoki": "1.0.0-rc.2",
     "siv": "1.0.0-alpha.1",
-    "faker": "2.1.2"
+    "faker": "2.1.5"
   },
   "devDependencies": {
     "coffee-script": "1.9.3",
     "nodeunit": "0.9.1",
-    "fragments": "1.0.0-beta.1",
-    "fragments-postgres": "1.0.0-beta.1"
+    "fragments": "1.0.0-beta.3",
+    "fragments-postgres": "1.0.0-beta.4"
   },
   "scripts": {
     "compile": "coffee --bare --compile --output lib src",

@@ -1,14 +1,39 @@
 # fragments-user
 
+*the documentation in this readme is work in progress and currently unfinished !*
+
 [![NPM Package](https://img.shields.io/npm/v/fragments-user.svg?style=flat)](https://www.npmjs.org/package/fragments-user)
 [![Build Status](https://travis-ci.org/snd/fragments-user.svg?branch=master)](https://travis-ci.org/snd/fragments-user/branches)
 [![Dependencies](https://david-dm.org/snd/fragments-user.svg)](https://david-dm.org/snd/fragments-user)
 
 **have a token-auth protected API running within minutes with [fragments](https://github.com/snd/fragments)**
 
-*work in progress. documentation soon.*
+
+## commands
+
+call `./app` to see a list of all available commands:
+
+```
+rights {user-id} - list the rights of user with `user-id`
+rights:delete {user-id} {right} - revoke `right` from user with `id`
+rights:insert {user-id} {right} - grant `right` to user with `id`
+serve [server-callback-name (default: 'server')] - start a server with `server-callback-name` as callback
+users [optional-user-id] - show all users or just the user with `optional-user-id` (if given)
+users:delete {user-id} - delete user with `user-id`
+users:insert {name} {email} {password} - insert user
+fake:users {count} - insert `count` fake users
+```
 
 <!--
+if you call `./app serve`
+it starts a webserver whose callback
+is `server`.
+
+it has a user api
+
+also brings commands insert, delete, list users 
+grant rights
+
 ### random copy ideas
 
 takes care of ... so you can ...

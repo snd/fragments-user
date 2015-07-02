@@ -17,7 +17,6 @@ call `./app` to see a list of all available commands:
 rights {user-id} - list the rights of user with `user-id`
 rights:delete {user-id} {right} - revoke `right` from user with `id`
 rights:insert {user-id} {right} - grant `right` to user with `id`
-serve [server-callback-name (default: 'server')] - start a server with `server-callback-name` as callback
 users [optional-user-id] - show all users or just the user with `optional-user-id` (if given)
 users:delete {user-id} - delete user with `user-id`
 users:insert {name} {email} {password} - insert user

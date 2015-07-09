@@ -217,11 +217,6 @@ where id:
 http GET 'localhost:8080/api/cockpit/users/55' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
-delete user:
-```
-./fragments user:delete 1
-```
-
 <!--
 
 ### random copy ideas

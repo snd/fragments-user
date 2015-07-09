@@ -122,7 +122,7 @@ login to get an access **token** in the response:
 http POST localhost:8080/api/cockpit/login username=casca password=opensesame
 ```
 
-if you don't want the api to be at `/api/cockpit`
+if you don't want the API to be at `/api/cockpit`
 just overwrite factory `urlCockpitApi` in 
 [src/factories/url.coffee](src/factories/url.coffee)
 (or the other urls contained in that file)

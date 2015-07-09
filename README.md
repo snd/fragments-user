@@ -142,19 +142,87 @@ http GET localhost:8080/api/cockpit/me 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ
 ```
 you should now get the user record in the response.
 
+let's give the user the right to read users:
+```
+./app rights:insert 1 canReadUsers
+```
 
+insert some fake users:
+```
+./app fake:users 100
+```
 
+read all users:
+```
+http GET localhost:8080/api/cockpit/users 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
 
+with limit and offset:
+```
+http GET 'localhost:8080/api/cockpit/users?limit=5&offset=20' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+ordered by username:
+```
+http GET 'localhost:8080/api/cockpit/users?order=name&asc=true' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+where email:
+```
+http GET 'localhost:8080/api/cockpit/users?where[email]=Evans_Jacobi@yahoo.com' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+where email contains:
+```
+http GET 'localhost:8080/api/cockpit/users?where[email][contains]=yahoo' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+where email ends:
+```
+http GET 'localhost:8080/api/cockpit/users?where[email][ends]=gmail.com' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+where name:
+```
+http GET 'localhost:8080/api/cockpit/users?where[name]=Rashawn.Haag' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+where name contains:
+```
+http GET 'localhost:8080/api/cockpit/users?where[name][contains]=nn' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+where name begins:
+```
+http GET 'localhost:8080/api/cockpit/users?where[name][begins]=an' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+id below:
+```
+http GET 'localhost:8080/api/cockpit/users?where[id][lt]=10' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+id between 10 and 20 (inclusive):
+```
+http GET 'localhost:8080/api/cockpit/users?where[id][gte]=10&where[id][lte]=20' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+created today:
+```
+http GET 'localhost:8080/api/cockpit/users?where[created_at]=today' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+where id:
+```
+http GET 'localhost:8080/api/cockpit/users/55' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+delete user:
+```
+./fragments user:delete 1
+```
 
 <!--
-if you call `./app serve`
-it starts a webserver whose callback
-is `server`.
-
-it has a user api
-
-also brings commands insert, delete, list users 
-grant rights
 
 ### random copy ideas
 

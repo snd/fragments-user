@@ -128,7 +128,7 @@ just overwrite factory `urlCockpitApi` in
 (or the other urls contained in that file)
 in your own app.
 
-see the currently logged in user:
+see the user logged in with a specific **token**:
 ```
 http GET localhost:8080/api/cockpit/me 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
@@ -142,7 +142,7 @@ let’s give user the right to access cockpit:
 ```
 (don’t forget to replace the id with the one you got in the response to the user insert)
 
-see the currently logged in user:
+see the user logged in with a specific **token**:
 ```
 http GET localhost:8080/api/cockpit/me 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
@@ -269,6 +269,8 @@ build from very small and simple parts.
 replace and reuse ...
 
 also some backoffice tools
+
+sensible defaults. dead-simple customization.
 
 -->
 

@@ -122,6 +122,12 @@ login to get an access **token** in the response:
 http POST localhost:8080/api/cockpit/login username=casca password=opensesame
 ```
 
+if you don't want the api to be at `/api/cockpit`
+just overwrite factory `urlCockpitApi` in 
+[src/factories/url.coffee](src/factories/url.coffee)
+(or the other urls contained in that file)
+in your own app.
+
 see the currently logged in user:
 ```
 http GET localhost:8080/api/cockpit/me 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
@@ -216,6 +222,8 @@ where id:
 ```
 http GET 'localhost:8080/api/cockpit/users/55' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
+
+...
 
 <!--
 

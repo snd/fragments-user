@@ -2,7 +2,7 @@
 
 *the documentation in this readme is work in progress and currently unfinished !*
 
-*this is currently in alpha state and subject to breaking changes without notice.*
+*fragment-user is currently in alpha state and subject to breaking changes without notice.*
 
 [![NPM Package](https://img.shields.io/npm/v/fragments-user.svg?style=flat)](https://www.npmjs.org/package/fragments-user)
 [![Build Status](https://travis-ci.org/snd/fragments-user.svg?branch=master)](https://travis-ci.org/snd/fragments-user/branches)
@@ -14,15 +14,15 @@
 is an up and coming Node.js library
 that structures web applications with (request time) dependency injection.
 
-fragments-user is a collection of factories for fragments.
-which provides the building blocks
+fragments-user is a collection of factories for fragments
+that provide small to large building blocks
 for the rapid and fun development of maintainable, testable and elegant
 postgres-backed rest APIs
 with token-based-auth (JWT)
 and rights management.
 it comes preloaded with authentication and user management API endpoints.
 
-fragments-user also serves as an example-application for fragments.
+fragments-user also serves as an example-application for fragments.  
 the tests for that example-application serve as additional integration tests for fragments.
 
 in your fragments [`app`](app) file make sure you are using
@@ -53,8 +53,8 @@ if (require.main === module) {
 }
 ```
 
-make sure that at least the following env vars are set in your environment.
-set them to your own values.
+make sure that at least the following environment variables are set
+and set them to your own values:
 ``` bash
 export PORT=8080
 export BASE_URL="http://localhost:$PORT"
@@ -69,8 +69,8 @@ export JWT_ENCRYPTION_PASSWORD='replace this with your super secret jwt encrypti
 export JWT_SIGNING_SECRET='replace this with your super secret jwt signing secret'
 ```
 
-call `./app` to see a list of all available commands.
-fragments-user adds the following commands:
+call `./app` to see a list of all available commands.  
+fragments-user itself adds the following commands:
 ```
 rights {user-id} - list the rights of user with `user-id`
 rights:delete {user-id} {right} - revoke `right` from user with `id`
@@ -83,6 +83,11 @@ fake:users {count} - insert `count` fake users
 
 add this migration to the migrations folder of your app:
 https://github.com/snd/fragments-user/blob/master/migrations/20150327204310-add-user-table.sql
+
+reset your database if necessary:
+```
+./app pg:drop-create
+```
 
 migrate:
 ```
@@ -105,14 +110,14 @@ start the cockpit application:
 ```
 ./app serve cockpit
 ```
-you can find it in [src/factories/middleware.coffee](src/factories/middleware.coffee).
+you can find the cockpit application in [src/factories/middleware.coffee](src/factories/middleware.coffee).
 it only contains a user API.
-if you need more than that - and you probably do - just copy it over to your application
+if you need more than that - and you probably do - just copy the factory `cockpit` over to your application
 and extend it.
 
 *the `http` command used in the following is https://github.com/jkbrzt/httpie*
 
-login to get an access **token**:
+login to get an access **token** in the response:
 ```
 http POST localhost:8080/api/cockpit/login username=casca password=opensesame
 ```

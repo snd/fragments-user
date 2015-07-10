@@ -54,7 +54,7 @@ if (require.main === module) {
 ```
 
 make sure that at least the following environment variables are set
-and set them to your own values:
+to your own values:
 ``` bash
 export PORT=8080
 export BASE_URL="http://localhost:$PORT"
@@ -123,12 +123,12 @@ http POST localhost:8080/api/cockpit/login username=casca password=opensesame
 ```
 
 if you don't want the API to be at `/api/cockpit`
-just overwrite factory `urlCockpitApi` in 
-[src/factories/url.coffee](src/factories/url.coffee)
-(or the other urls contained in that file)
-in your own app.
+just add the factory `urlCockpitApi` in your own app
+which overwrites `urlCockpitApi` in
+[src/factories/url.coffee](src/factories/url.coffee).
+overwrite other fragments as needed.
 
-see the user logged in with a specific **token**:
+see the user that is logged in with a specific **token**:
 ```
 http GET localhost:8080/api/cockpit/me 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```

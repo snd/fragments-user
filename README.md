@@ -25,6 +25,12 @@ it comes preloaded with authentication and user management API endpoints.
 fragments-user also serves as an example-application for fragments.  
 the tests for that example-application serve as additional integration tests for fragments.
 
+### install
+
+```
+npm install fragments-user
+```
+
 in your fragments [`app`](app) file make sure you are using
 [fragments-postgres](https://github.com/snd/fragments-postgres)
 and fragments-user:
@@ -53,6 +59,8 @@ if (require.main === module) {
 }
 ```
 
+### configuration environment variables
+
 make sure that at least the following environment variables are set
 to your own values:
 ``` bash
@@ -68,6 +76,8 @@ export POSTGRES_POOL_SIZE=40
 export JWT_ENCRYPTION_PASSWORD='replace this with your super secret jwt encryption password'
 export JWT_SIGNING_SECRET='replace this with your super secret jwt signing secret'
 ```
+
+### commands
 
 call `./app` to see a list of all available commands.  
 fragments-user itself adds the following commands:
@@ -114,6 +124,8 @@ you can find the cockpit application in [src/factories/middleware.coffee](src/fa
 it only contains a user API.
 if you need more than that - and you probably do - just copy the factory `cockpit` over to your application
 and extend it.
+
+### API
 
 *the `http` command used in the following is https://github.com/jkbrzt/httpie*
 

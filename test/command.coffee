@@ -105,36 +105,6 @@ module.exports =
           ]
           test.done()
 
-  'rights': (test) ->
-    app (
-      pgDropCreateMigrate
-      command_rights
-      insertFakeUsers
-      grantUserRightWhereId
-      omitPassword
-    ) ->
-      pgDropCreateMigrate()
-        .bind({})
-        .then ->
-          insertFakeUsers(1)
-        .then (users) ->
-          this.user = omitPassword users[0]
-          test.ok this.user.id?
-          grantUserRightWhereId('canAccessCockpit', this.user.id)
-        .then ->
-          grantUserRightWhereId('canReadUsers', this.user.id)
-        .then ->
-          grantUserRightWhereId('canCreateUsers', this.user.id)
-        .then ->
-          command_rights(this.user.id)
-        .then (rights) ->
-          test.deepEqual rights, [
-            'canAccessCockpit'
-            'canReadUsers'
-            'canCreateUsers'
-          ]
-          test.done()
-
   'fake:users': (test) ->
     app (
       pgDropCreateMigrate

@@ -125,11 +125,16 @@ it only contains a user API.
 if you need more than that - and you probably do - just copy the factory `cockpit` over to your application
 and extend it.
 
-### user API
+### user API documentation
 
 *the `http` command used in the following is https://github.com/jkbrzt/httpie*
 
-see the tests that are linked with each API action for additional documentation.
+the code for each API action is linked.
+use them as inspiration to build your own API actions.
+most actions are only a few lines of code.
+
+the tests for each API action are linked as well.
+refer to them for additional documentation.
 
 #### [login !](src/factories/api-login.coffee) ([tests](src/factories/test/api-login.coffee))
 

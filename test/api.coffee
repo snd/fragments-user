@@ -1,11 +1,16 @@
 app = require '../app'
 
 testKeys = [
+
+  # login
+
   'testApiLoginUnprocessableNoBody'
   'testApiLoginUnprocessableInvalidPassword'
   'testApiLoginUnprocessableUserNotFound'
   'testApiLoginUnprocessableWrongPassword'
   'testApiLoginOk'
+
+  # current user
 
   'testApiCurrentUserGetForbidden'
   'testApiCurrentUserGetOk'
@@ -16,20 +21,30 @@ testKeys = [
   'testApiCurrentUserPatchOkNoChange'
   'testApiCurrentUserPatchOkChange'
 
+  # users
+
   'testApiUsersGetForbidden'
   'testApiUsersGetOkAll'
   'testApiUsersGetUnprocessable'
   'testApiUsersGetOkFiltered'
+
+  'testApiUsersPostForbidden'
+  'testApiUsersPostUnprocessable'
+  'testApiUsersPostUnprocessableTaken'
+  'testApiUsersPostOk'
+
+  # user
 
   'testApiUserGetForbidden'
   'testApiUserGetOk'
   'testApiUserGetSingleRight'
   'testApiUserGetNotFound'
 
-  'testApiUsersPostForbidden'
-  'testApiUsersPostUnprocessable'
-  'testApiUsersPostUnprocessableTaken'
-  'testApiUsersPostOk'
+  'testApiUserPatchForbidden'
+  'testApiUserPatchUnprocessable'
+  'testApiUserPatchUnprocessableTaken'
+  'testApiUserPatchOkNoChange'
+  'testApiUserPatchOkChange'
 
   'testApiUserDeleteForbidden'
   'testApiUserDeleteOk'

@@ -9,6 +9,8 @@ module.exports.apiUserPatch = (
     endUnprocessableJSON
     updateUserWhereId
     omitPassword
+    params
+    body
   ) ->
     unless canUpdateUsers() or canUpdateUsers(params.id)
       return endForbidden()

@@ -61,7 +61,7 @@ if (require.main === module) {
 
 ### configuration environment variables
 
-make sure that at least the following environment variables are set
+make sure that the following environment variables are set
 to your own values:
 ``` bash
 export PORT=8080
@@ -77,9 +77,10 @@ export JWT_ENCRYPTION_PASSWORD='replace this with your super secret jwt encrypti
 export JWT_SIGNING_SECRET='replace this with your super secret jwt signing secret'
 ```
 
-### commands
+### [commands](src/factories/command.coffee)
 
-call `./app` to see a list of all available commands.  
+call `./app` to see a list of all available commands.
+
 fragments-user itself adds the following commands:
 ```
 rights {user-id} - list the rights of user with `user-id`
@@ -91,8 +92,9 @@ users:insert {name} {email} {password} - insert user
 fake:users {count} - insert `count` fake users
 ```
 
-add this migration to the migrations folder of your app:
-https://github.com/snd/fragments-user/blob/master/migrations/20150327204310-add-user-table.sql
+add
+[migrations/20150327204310-add-user-table.sql](migrations/20150327204310-add-user-table.sql)
+to the migrations folder of your app.
 
 reset your database if necessary:
 ```
@@ -114,8 +116,6 @@ confirm that the user is inserted by listing all users:
 ./app users
 ```
 
-
-
 start the cockpit application:
 ```
 ./app serve cockpit
@@ -125,24 +125,30 @@ it only contains a user API.
 if you need more than that - and you probably do - just copy the factory `cockpit` over to your application
 and extend it.
 
-### API
+### user API
 
 *the `http` command used in the following is https://github.com/jkbrzt/httpie*
 
+see the tests that are linked with each API action for additional documentation.
+
+#### [login !](src/factories/api-login.coffee) ([tests](test/api-login.coffee))
+
 login to get an access **token** in the response:
 ```
-http POST localhost:8080/api/cockpit/login username=casca password=opensesame
+http POST localhost:8080/api/login username=casca password=opensesame
 ```
 
-if you don't want the API to be at `/api/cockpit`
-just add the factory `urlCockpitApi` in your own app
-which overwrites `urlCockpitApi` in
+if you don't want the API to be at `/api`
+just add the factory `urlApi` in your own app
+which overwrites `urlApi` in
 [src/factories/url.coffee](src/factories/url.coffee).
 overwrite other fragments as needed.
 
+#### [get current user](src/factories/api-current-user-get.coffee) ([tests](test/api-current-user-get.coffee))
+
 see the user that is logged in with a specific **token**:
 ```
-http GET localhost:8080/api/cockpit/me 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET localhost:8080/api/me 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 (don’t forget to replace the **token** with the one you got in the response to the login request)
 
@@ -156,86 +162,136 @@ let’s give user the right to access cockpit:
 
 see the user logged in with a specific **token**:
 ```
-http GET localhost:8080/api/cockpit/me 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET localhost:8080/api/me 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 you should now get the user record in the response.
 
-let's give the user the right to read users:
+#### [update current user !](src/factories/api-current-user-patch.coffee) ([tests](test/api-current-user-patch.coffee))
+
+```
+http PATCH localhost:8080/api/me name=griffith 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+#### [filter all users](src/factories/api-users-get.coffee) ([tests](test/api-users-get.coffee))
+
+to read all users the logged in user needs the right `canReadUsers`.  
+let's give him that right:
 ```
 ./app rights:insert 1 canReadUsers
 ```
 
-insert some fake users:
+insert some fake users so we have some records to filter:
 ```
 ./app fake:users 100
 ```
 
-read all users:
+all users:
+
 ```
-http GET localhost:8080/api/cockpit/users 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET localhost:8080/api/users 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
 with limit and offset:
 ```
-http GET 'localhost:8080/api/cockpit/users?limit=5&offset=20' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET 'localhost:8080/api/users?limit=5&offset=20' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
 ordered by username:
 ```
-http GET 'localhost:8080/api/cockpit/users?order=name&asc=true' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET 'localhost:8080/api/users?order=name&asc=true' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
 where email:
 ```
-http GET 'localhost:8080/api/cockpit/users?where[email]=Evans_Jacobi@yahoo.com' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET 'localhost:8080/api/users?where[email]=Evans_Jacobi@yahoo.com' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
 where email contains:
 ```
-http GET 'localhost:8080/api/cockpit/users?where[email][contains]=yahoo' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET 'localhost:8080/api/users?where[email][contains]=yahoo' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
 where email ends:
 ```
-http GET 'localhost:8080/api/cockpit/users?where[email][ends]=gmail.com' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET 'localhost:8080/api/users?where[email][ends]=gmail.com' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
 where name:
 ```
-http GET 'localhost:8080/api/cockpit/users?where[name]=Rashawn.Haag' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET 'localhost:8080/api/users?where[name]=Rashawn.Haag' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
 where name contains:
 ```
-http GET 'localhost:8080/api/cockpit/users?where[name][contains]=nn' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET 'localhost:8080/api/users?where[name][contains]=nn' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
 where name begins:
 ```
-http GET 'localhost:8080/api/cockpit/users?where[name][begins]=an' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET 'localhost:8080/api/users?where[name][begins]=an' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
 id below:
 ```
-http GET 'localhost:8080/api/cockpit/users?where[id][lt]=10' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET 'localhost:8080/api/users?where[id][lt]=10' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
 id between 10 and 20 (inclusive):
 ```
-http GET 'localhost:8080/api/cockpit/users?where[id][gte]=10&where[id][lte]=20' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET 'localhost:8080/api/users?where[id][gte]=10&where[id][lte]=20' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
 created today:
 ```
-http GET 'localhost:8080/api/cockpit/users?where[created_at]=today' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+http GET 'localhost:8080/api/users?where[created_at]=today' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
-where id:
+... you get the idea. if something feels like it should work but doesn't: [file an issue !](https://github.com/snd/fragments-user/issues/new)
+
+#### [create user](src/factories/api-users-post.coffee) ([tests](test/api-users-post.coffee))
+
+to create users the logged in user needs the right `canCreateUsers`.  
+let's give him that right:
 ```
-http GET 'localhost:8080/api/cockpit/users/55' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+./app rights:insert 1 canCreateUsers
 ```
 
-...
+now let's create a user:
+```
+http POST 'localhost:8080/api/users name=ubik email=ubik@example.com password=opensesame rights='' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+#### [get user where id](src/factories/api-user-get.coffee) ([tests](test/api-user-get.coffee))
+
+```
+http GET 'localhost:8080/api/users/55' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+#### [update user !](src/factories/api-user-patch.coffee) ([tests](test/api-user-patch.coffee))
+
+to update users the logged in user needs the right `canUpdateUsers`.  
+let's give him that right:
+```
+./app rights:insert 1 canUpdateUsers
+```
+
+now let's update a user:
+```
+http PATCH 'localhost:8080/api/users/1 name=ubik email=ubik@example.com password=opensesame rights='' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
+
+#### [delete user !](src/factories/api-user-delete.coffee) ([tests](test/api-user-delete.coffee))
+
+to delete users the logged in user needs the right `canDeleteUsers`.  
+let's give him that right:
+```
+./app rights:insert 1 canDeleteUsers
+```
+
+now let's delete a user:
+```
+http DELETE 'localhost:8080/api/users/3 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
+```
 
 <!--
 

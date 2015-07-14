@@ -129,12 +129,10 @@ and extend it.
 
 *the `http` command used in the following is https://github.com/jkbrzt/httpie*
 
-the code for each API action is linked.
-use them as inspiration to build your own API actions.
+the code and test for each API action are linked.
+refer to them for additional documentation (especially for edge cases).
+use the code as inspiration to build your own API actions.
 most actions are only a few lines of code.
-
-the tests for each API action are linked as well.
-refer to them for additional documentation.
 
 #### [login !](src/factories/api-login.coffee) ([tests](src/factories/test/api-login.coffee))
 

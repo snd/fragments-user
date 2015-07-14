@@ -248,7 +248,7 @@ http GET 'localhost:8080/api/users?where[created_at]=today' 'Authorization:Beare
 
 ... you get the idea. if something feels like it should work but doesn't: [file an issue !](https://github.com/snd/fragments-user/issues/new)
 
-#### [create user](src/factories/api-users-post.coffee) ([tests](test/api-users-post.coffee))
+#### [create user !](src/factories/api-users-post.coffee) ([tests](test/api-users-post.coffee))
 
 to create users the logged in user needs the right `canCreateUsers`.  
 let's give him that right:

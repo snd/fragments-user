@@ -3,12 +3,12 @@ module.exports.cockpitAccessControlMiddleware = (
 ) ->
   MIDDLEWARE (
     matchCurrentUrl
-    urlCockpitApi
+    urlApi
     canAccessCockpit
     endForbidden
     next
   ) ->
-    if matchCurrentUrl(urlCockpitApi('*')) and not canAccessCockpit()
+    if matchCurrentUrl(urlApi('*')) and not canAccessCockpit()
       endForbidden()
     else
       next()
@@ -18,20 +18,31 @@ module.exports.cockpit = (
   MIDDLEWARE
   commonMiddlewarePrelude
   cockpitAccessControlMiddleware
-  route_cockpitApiLogin
-  route_cockpitApiMe
-  route_cockpitApiUsers
+
+  apiLogin
+  apiCurrentUserGet
+  apiCurrentUserPatch
+  apiUsersGet
+  apiUsersPost
+  apiUserGet
+  apiUserPatch
+  apiUserDelete
 ) ->
   sequenz [
     commonMiddlewarePrelude
 
-    route_cockpitApiLogin
+    apiLogin
 
-    # everything except route_cockpitApiLogin requires user to have right to access cockpit
+    # everything except the login action requires user to have right to access cockpit
     cockpitAccessControlMiddleware
 
-    route_cockpitApiMe
-    route_cockpitApiUsers
+    apiCurrentUserGet
+    apiCurrentUserPatch
+    apiUsersGet
+    apiUsersPost
+    apiUserGet
+    apiUserPatch
+    apiUserDelete
 
     # when no other route matches respond with 404
     MIDDLEWARE (

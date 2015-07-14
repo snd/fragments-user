@@ -6,39 +6,25 @@ module.exports.flexibleUrl = ->
 ################################################################################
 # api
 
-module.exports.urlCockpitApi = (
+module.exports.urlApi = (
   flexibleUrl
 ) ->
-  flexibleUrl '/api/cockpit'
+  flexibleUrl '/api'
 
-module.exports.urlCockpitApiLogin = (
-  urlCockpitApi
+module.exports.urlApiLogin = (
+  urlApi
 ) ->
   ->
-    urlCockpitApi('login')
+    urlApi('login')
 
-module.exports.urlCockpitApiMe = (
-  urlCockpitApi
+module.exports.urlApiCurrentUser = (
+  urlApi
 ) ->
   ->
-    urlCockpitApi('me')
+    urlApi('me')
 
-module.exports.urlCockpitApiUsers = (
+module.exports.urlApiUsers = (
   flexibleUrl
-  urlCockpitApi
+  urlApi
 ) ->
-  flexibleUrl urlCockpitApi('users')
-
-################################################################################
-# single page app
-
-module.exports.urlCockpit = (
-  flexibleUrl
-) ->
-  flexibleUrl '/cockpit'
-
-module.exports.urlPatternCockpit = (
-  Pattern
-  urlCockpit
-) ->
-  new Pattern urlCockpit()
+  flexibleUrl urlApi('users')

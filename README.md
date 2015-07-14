@@ -131,7 +131,7 @@ and extend it.
 
 see the tests that are linked with each API action for additional documentation.
 
-#### [login !](src/factories/api-login.coffee) ([tests](test/api-login.coffee))
+#### [login !](src/factories/api-login.coffee) ([tests](src/factories/test/api-login.coffee))
 
 login to get an access **token** in the response:
 ```
@@ -144,7 +144,7 @@ which overwrites `urlApi` in
 [src/factories/url.coffee](src/factories/url.coffee).
 overwrite other fragments as needed.
 
-#### [get current user](src/factories/api-current-user-get.coffee) ([tests](test/api-current-user-get.coffee))
+#### [get current user](src/factories/api-current-user-get.coffee) ([tests](src/factories/test/api-current-user-get.coffee))
 
 see the user that is logged in with a specific **token**:
 ```
@@ -166,13 +166,13 @@ http GET localhost:8080/api/me 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMj
 ```
 you should now get the user record in the response.
 
-#### [update current user !](src/factories/api-current-user-patch.coffee) ([tests](test/api-current-user-patch.coffee))
+#### [update current user !](src/factories/api-current-user-patch.coffee) ([tests](src/factories/test/api-current-user-patch.coffee))
 
 ```
 http PATCH localhost:8080/api/me name=griffith 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
-#### [filter all users](src/factories/api-users-get.coffee) ([tests](test/api-users-get.coffee))
+#### [filter all users](src/factories/api-users-get.coffee) ([tests](src/factories/test/api-users-get.coffee))
 
 to read all users the logged in user needs the right `canReadUsers`.  
 let's give him that right:
@@ -248,7 +248,7 @@ http GET 'localhost:8080/api/users?where[created_at]=today' 'Authorization:Beare
 
 ... you get the idea. if something feels like it should work but doesn't: [file an issue !](https://github.com/snd/fragments-user/issues/new)
 
-#### [create user !](src/factories/api-users-post.coffee) ([tests](test/api-users-post.coffee))
+#### [create user !](src/factories/api-users-post.coffee) ([tests](src/factories/test/api-users-post.coffee))
 
 to create users the logged in user needs the right `canCreateUsers`.  
 let's give him that right:
@@ -261,13 +261,13 @@ now let's create a user:
 http POST 'localhost:8080/api/users name=ubik email=ubik@example.com password=opensesame rights='' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
-#### [get user where id](src/factories/api-user-get.coffee) ([tests](test/api-user-get.coffee))
+#### [get user where id](src/factories/api-user-get.coffee) ([tests](src/factories/test/api-user-get.coffee))
 
 ```
 http GET 'localhost:8080/api/users/55' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
-#### [update user !](src/factories/api-user-patch.coffee) ([tests](test/api-user-patch.coffee))
+#### [update user !](src/factories/api-user-patch.coffee) ([tests](src/factories/test/api-user-patch.coffee))
 
 to update users the logged in user needs the right `canUpdateUsers`.  
 let's give him that right:
@@ -280,7 +280,7 @@ now let's update a user:
 http PATCH 'localhost:8080/api/users/1 name=ubik email=ubik@example.com password=opensesame rights='' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
-#### [delete user !](src/factories/api-user-delete.coffee) ([tests](test/api-user-delete.coffee))
+#### [delete user !](src/factories/api-user-delete.coffee) ([tests](src/factories/test/api-user-delete.coffee))
 
 to delete users the logged in user needs the right `canDeleteUsers`.  
 let's give him that right:

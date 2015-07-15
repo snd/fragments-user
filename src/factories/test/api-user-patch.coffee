@@ -261,6 +261,7 @@ module.exports.testApiUserPatchOkNoChange = (
         test.equal response.statusCode, 200
         test.equal response.body.email, 'operator@example.com'
         test.equal response.body.name, 'operator'
+        test.equal response.body.password, null
         test.equal response.body.rights, 'canAccessCockpit\ncanUpdateUsers'
 
         # can update others
@@ -279,6 +280,7 @@ module.exports.testApiUserPatchOkNoChange = (
         test.equal response.statusCode, 200
         test.equal response.body.email, 'other@example.com'
         test.equal response.body.name, 'other'
+        test.equal response.body.password, null
         test.equal response.body.rights, ''
 
         shutdown()
@@ -286,6 +288,87 @@ module.exports.testApiUserPatchOkNoChange = (
         test.done()
 
 module.exports.testApiUserPatchOkChange = (
+  command_serve
+  pgDropCreateMigrate
+  shutdown
+  envStringBaseUrl
+  urlApiLogin
+  urlApiUsers
+  requestPromise
+  insertUser
 ) ->
   (test) ->
-    test.done()
+    pgDropCreateMigrate()
+      .bind({})
+      .then ->
+        insertUser
+          email: 'operator@example.com'
+          name: 'operator'
+          password: 'topsecret'
+          rights: 'canAccessCockpit\ncanUpdateUsers'
+      .then (operator) ->
+        this.operator = operator
+
+        insertUser
+          email: 'other@example.com'
+          name: 'other'
+          password: 'topsecret'
+          rights: ''
+      .then (other) ->
+        this.other = other
+
+        command_serve('cockpit')
+      .then ->
+        requestPromise(
+          method: 'POST'
+          url: envStringBaseUrl + urlApiLogin()
+          json: true
+          body:
+            username: 'operator'
+            password: 'topsecret'
+        )
+      .then ([response]) ->
+        test.equal response.statusCode, 200
+        this.token = response.body.token
+
+        # can update itself
+        requestPromise(
+          method: 'PATCH'
+          url: envStringBaseUrl + urlApiUsers(this.operator.id)
+          body:
+            email: 'operatorchanged@example.com'
+            name: 'operatorchanged'
+            password: 'topsecretchanged'
+          headers:
+            authorization: "Bearer #{this.token}"
+          json: true
+        )
+      .then ([response]) ->
+        test.equal response.statusCode, 200
+        test.equal response.body.email, 'operatorchanged@example.com'
+        test.equal response.body.name, 'operatorchanged'
+        test.equal response.body.password, null
+        test.equal response.body.rights, 'canAccessCockpit\ncanUpdateUsers'
+
+        # can update others
+        requestPromise(
+          method: 'PATCH'
+          url: envStringBaseUrl + urlApiUsers(this.other.id)
+          body:
+            email: 'otherchanged@example.com'
+            name: 'otherchanged'
+            password: 'topsecretchanged'
+          headers:
+            authorization: "Bearer #{this.token}"
+          json: true
+        )
+      .then ([response]) ->
+        test.equal response.statusCode, 200
+        test.equal response.body.email, 'otherchanged@example.com'
+        test.equal response.body.name, 'otherchanged'
+        test.equal response.body.password, null
+        test.equal response.body.rights, ''
+
+        shutdown()
+      .then ->
+        test.done()

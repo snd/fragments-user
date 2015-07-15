@@ -11,6 +11,7 @@ module.exports.apiUserPatch = (
     omitPassword
     params
     body
+    endJSON
   ) ->
     unless canUpdateUsers() or canUpdateUsers(params.id)
       return endForbidden()

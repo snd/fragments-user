@@ -16,4 +16,4 @@ env:
     - JWT_ENCRYPTION_PASSWORD='super secret jwt encryption password'
     - JWT_SIGNING_SECRET='super secret jwt signing secret'
 addons:
-  postgresql: "9.3"
+  postgresql: "9.4"

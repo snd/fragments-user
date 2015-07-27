@@ -126,9 +126,12 @@ it only contains a user API.
 if you need more than that - and you probably do - just copy the factory `cockpit` over to your application
 and extend it.
 
-### core concepts
+### customization
 
-sensible defaults. dead-simple customization.
+fragments-user provides sensible defaults.
+customizing them is dead-simple.
+
+you can overwrite every part which vastly changes the behaviour
 
 ### user API documentation
 
@@ -138,6 +141,16 @@ the code and test for each API action are linked.
 refer to them for additional documentation (especially for edge cases).
 use the code as inspiration to build your own API actions.
 most actions are only a few lines of code.
+
+#### [signup !](src/factories/api-signup-post.coffee) ([tests](src/factories/test/api-signup-post.coffee))
+
+signup 
+```
+http POST localhost:8080/api/signup username=casca email=casca@example.com password=opensesame
+```
+
+if you don't want users to be able to sign up just omit
+`apiSignupPost` from your middleware.
 
 #### [login !](src/factories/api-login-post.coffee) ([tests](src/factories/test/api-login-post.coffee))
 

@@ -1,6 +1,6 @@
 {
   "name": "fragments-user",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0-alpha.3",
   "description": "have a token-auth protected API running within minutes with fragments",
   "keywords": [
     "auth",

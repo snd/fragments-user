@@ -9,8 +9,11 @@ module.exports.omitPassword = (_) ->
 module.exports.insertUser = (
   userTable
   hashPasswordIfPresent
+  _
 ) ->
   (user) ->
+    user = _.clone user
+    user.rights ?= ''
     userTable
       .queueBeforeEach(hashPasswordIfPresent)
       .allow(
@@ -30,8 +33,8 @@ module.exports.firstUserWhereLogin = (
   (login) ->
     userTable
       .where($or: [
-        {email: login.username}
-        {name: login.username}
+        {email: login.identifier}
+        {name: login.identifier}
       ])
       .first()
       .then (user) ->
@@ -43,28 +46,6 @@ module.exports.firstUserWhereLogin = (
             user
           else
             null
-
-module.exports.firstUserWhereNameAndNotId = (
-  userTable
-) ->
-  (name, id) ->
-    userTable
-      .where(
-        name: name
-        id: {$ne: id}
-      )
-      .first()
-
-module.exports.firstUserWhereEmailAndNotId = (
-  userTable
-) ->
-  (email, id) ->
-    userTable
-      .where(
-        email: email
-        id: {$ne: id}
-      )
-      .first()
 
 module.exports.updateUserWhereId = (
   userTable
@@ -80,7 +61,6 @@ module.exports.updateUserWhereId = (
         'rights'
       )
       .where(id: id)
-      .returnFirst()
       .update(user)
 
 module.exports.grantUserRightWhereId = (

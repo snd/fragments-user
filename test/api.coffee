@@ -1,53 +1,29 @@
 app = require '../app'
 
 testKeys = [
+  'testApiSignupPost'
 
   # login
 
-  'testApiLoginUnprocessableNoBody'
-  'testApiLoginUnprocessableInvalidPassword'
-  'testApiLoginUnprocessableUserNotFound'
-  'testApiLoginUnprocessableWrongPassword'
-  'testApiLoginOk'
+  'testApiLoginPost'
 
   # current user
 
-  'testApiCurrentUserGetForbidden'
-  'testApiCurrentUserGetOk'
+  'testApiCurrentUserGet'
+  'testApiCurrentUserPatch'
 
-  'testApiCurrentUserPatchForbidden'
-  'testApiCurrentUserPatchUnprocessable'
-  'testApiCurrentUserPatchUnprocessableTaken'
-  'testApiCurrentUserPatchOkNoChange'
-  'testApiCurrentUserPatchOkChange'
+  'testApiCurrentUserDelete'
 
-  # users
+  # user collection
 
-  'testApiUsersGetForbidden'
-  'testApiUsersGetOkAll'
-  'testApiUsersGetUnprocessable'
-  'testApiUsersGetOkFiltered'
+  'testApiUsersGet'
+  'testApiUsersPost'
 
-  'testApiUsersPostForbidden'
-  'testApiUsersPostUnprocessable'
-  'testApiUsersPostUnprocessableTaken'
-  'testApiUsersPostOk'
+  # user record
 
-  # user
-
-  'testApiUserGetForbidden'
-  'testApiUserGetOk'
-  'testApiUserGetSingleRight'
-  'testApiUserGetNotFound'
-
-  'testApiUserPatchForbidden'
-  'testApiUserPatchUnprocessable'
-  'testApiUserPatchUnprocessableTaken'
-  'testApiUserPatchOkNoChange'
-  'testApiUserPatchOkChange'
-
-  'testApiUserDeleteForbidden'
-  'testApiUserDeleteOk'
+  'testApiUserGet'
+  'testApiUserPatch'
+  'testApiUserDelete'
 ]
 
 testKeys.forEach (testKey) ->

@@ -4,8 +4,11 @@ module.exports.apiUserPatch = (
 ) ->
   PATCH urlApiUsers(':id'), (
     canUpdateUsers
-    endForbidden
-    userUpdateValidator
+    currentUser
+    endForbiddenTokenRequired
+    endForbiddenInsufficientRights
+    end404
+    validateUserUpdate
     endUnprocessableJSON
     updateUserWhereId
     omitPassword
@@ -13,10 +16,15 @@ module.exports.apiUserPatch = (
     body
     endJSON
   ) ->
+    unless currentUser?
+      return endForbiddenTokenRequired()
     unless canUpdateUsers() or canUpdateUsers(params.id)
-      return endForbidden()
-    userUpdateValidator(body, params.id).then (errors) ->
+      return endForbiddenInsufficientRights()
+    validateUserUpdate(body, params.id).then (errors) ->
       if errors?
         return endUnprocessableJSON errors
       updateUserWhereId(body, params.id).then (updated) ->
-        endJSON omitPassword updated
+        if updated.length isnt 1
+          end404()
+        else
+          endJSON omitPassword updated[0]

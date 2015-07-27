@@ -4,6 +4,7 @@
 
 *fragment-user is currently in alpha state and subject to breaking changes without notice.*
 
+[![ALPHA](http://img.shields.io/badge/Stability-ALPHA-orange.svg?style=flat)]()
 [![NPM Package](https://img.shields.io/npm/v/fragments-user.svg?style=flat)](https://www.npmjs.org/package/fragments-user)
 [![Build Status](https://travis-ci.org/snd/fragments-user.svg?branch=master)](https://travis-ci.org/snd/fragments-user/branches)
 [![Dependencies](https://david-dm.org/snd/fragments-user.svg)](https://david-dm.org/snd/fragments-user)
@@ -125,6 +126,10 @@ it only contains a user API.
 if you need more than that - and you probably do - just copy the factory `cockpit` over to your application
 and extend it.
 
+### core concepts
+
+sensible defaults. dead-simple customization.
+
 ### user API documentation
 
 *the `http` command used in the following is https://github.com/jkbrzt/httpie*
@@ -178,7 +183,7 @@ http PATCH localhost:8080/api/me name=griffith 'Authorization:Bearer eyJhbGciOiJ
 #### [filter all users](src/factories/api-users-get.coffee) ([tests](src/factories/test/api-users-get.coffee))
 
 to read all users the logged in user needs the right `canReadUsers`.  
-let's give him that right:
+let's grant that right:
 ```
 ./app rights:insert 1 canReadUsers
 ```
@@ -254,7 +259,7 @@ http GET 'localhost:8080/api/users?where[created_at]=today' 'Authorization:Beare
 #### [create user !](src/factories/api-users-post.coffee) ([tests](src/factories/test/api-users-post.coffee))
 
 to create users the logged in user needs the right `canCreateUsers`.  
-let's give him that right:
+let's grant that right:
 ```
 ./app rights:insert 1 canCreateUsers
 ```
@@ -273,7 +278,7 @@ http GET 'localhost:8080/api/users/55' 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ
 #### [update user !](src/factories/api-user-patch.coffee) ([tests](src/factories/test/api-user-patch.coffee))
 
 to update users the logged in user needs the right `canUpdateUsers`.  
-let's give him that right:
+let's grant that right:
 ```
 ./app rights:insert 1 canUpdateUsers
 ```
@@ -286,7 +291,7 @@ http PATCH 'localhost:8080/api/users/1 name=ubik email=ubik@example.com password
 #### [delete user !](src/factories/api-user-delete.coffee) ([tests](src/factories/test/api-user-delete.coffee))
 
 to delete users the logged in user needs the right `canDeleteUsers`.  
-let's give him that right:
+let's grant that right:
 ```
 ./app rights:insert 1 canDeleteUsers
 ```
@@ -296,9 +301,30 @@ now let's delete a user:
 http DELETE 'localhost:8080/api/users/3 'Authorization:Bearer eyJhbGciOiJIUzI1NiJ9.ZTdiMjJhZDk4OWY4Y2M5ZGQ1ZjcxM2Q3MDIxZjc2NTk.Tl-xvkKK9YP9Oz9o-BvuN2R3qi8VGwFpRzSh5cik-78'
 ```
 
+### access control
+
+just overwrite them
+
+some properties of the currently implemented rights management.
+
+a user can't update his own rights.
+it's not even allowed.
+
+a user with the right to create users can potentially create
+a user that has more rights.
+
+a user with the right to updates users can change his and other users rights.
+
+the rights `canCreateUsers` and `canUpdateUsers` can be escalated into all rights.
+they are to be considered superuser rights.
+
 <!--
 
-### random copy ideas
+simple but powerful and flexible rights management
+
+you can hook into anything
+
+restful http API with helpful error messages
 
 takes care of ... so you can ...
 

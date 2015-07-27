@@ -3,13 +3,21 @@ module.exports.apiUserDelete = (
   DELETE
 ) ->
   DELETE urlApiUsers(':id'), (
+    currentUser
     canDeleteUsers
-    endForbidden
+    endForbiddenTokenRequired
+    endForbiddenInsufficientRights
     deleteUserWhereId
     params
+    end404
     end
   ) ->
+    unless currentUser?
+      return endForbiddenTokenRequired()
     unless canDeleteUsers() or canDeleteUsers(params.id)
-      return endForbidden()
-    deleteUserWhereId(params.id).then ->
-      end()
+      return endForbiddenInsufficientRights()
+    deleteUserWhereId(params.id).then (deleted) ->
+      if deleted.length is 0
+        end404()
+      else
+        end()

@@ -3,17 +3,22 @@ module.exports.apiUserGet = (
   GET
 ) ->
   GET urlApiUsers(':id'), (
+    currentUser
+    endForbiddenTokenRequired
+    endForbiddenInsufficientRights
     firstUserWhereId
-    endForbidden
     params
     endJSON
     end404
     canReadUsers
     omitPassword
   ) ->
+    unless currentUser?
+      return endForbiddenTokenRequired()
     unless canReadUsers() or canReadUsers(params.id)
-      return endForbidden()
+      return endForbiddenInsufficientRights()
     firstUserWhereId(params.id).then (user) ->
-      unless user?
-        return end404()
-      endJSON omitPassword user
+      if user?
+        endJSON omitPassword user
+      else
+        end404()

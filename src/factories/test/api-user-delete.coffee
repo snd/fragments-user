@@ -1,100 +1,101 @@
-module.exports.testApiUserDeleteForbidden = (
-  command_serve
+module.exports.testApiUserDelete = (
   pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
+  testHelperInsertUser
+  command_serve
+  selectUser
+  testHelperDelete
+  testHelperLogin
+  testHelperGrantUserRights
   urlApiUsers
-  requestPromise
-  insertFakeUsers
-  insertUser
+  errorMessageForEndForbiddenTokenRequired
+  errorMessageForEndForbiddenInsufficientRights
+  shutdown
 ) ->
   (test) ->
     pgDropCreateMigrate()
+      .bind({})
       .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: 'canAccessCockpit'
+        testHelperInsertUser('operator', 'operator@example.com', 'topsecret')
       .then ->
-        insertFakeUsers(3)
-      .then ->
+
+        testHelperInsertUser('other', 'other@example.com', 'topsecret')
+      .then (user) ->
+        test.notEqual user.id, null
+        @other = user
+
+        testHelperInsertUser('another', 'another@example.com', 'topsecret')
+      .then (user) ->
+        test.notEqual user.id, null
+        @another = user
+
+        selectUser()
+      .then (users) ->
+        test.equal users.length, 3
+
         command_serve('cockpit')
       .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        token = response.body.token
 
-        requestPromise(
-          method: 'DELETE'
-          url: envStringBaseUrl + urlApiUsers(2)
-          headers:
-            authorization: "Bearer #{token}"
-          json: true
-        )
-      .then ([response]) ->
+        # unauthenticated
+        testHelperDelete null, urlApiUsers(@other.id)
+      .then (response) ->
         test.equal response.statusCode, 403
+        test.equal response.body, errorMessageForEndForbiddenTokenRequired
 
-        shutdown()
-      .then ->
-        test.done()
+        # authenticate
+        testHelperLogin(test, 'operator', 'topsecret')
+      .then (token) ->
+        @token = token
 
-module.exports.testApiUserDeleteOk = (
-  command_serve
-  pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
-  urlApiUsers
-  requestPromise
-  insertFakeUsers
-  insertUser
-) ->
-  (test) ->
-    pgDropCreateMigrate()
+        # unprivileged
+        testHelperDelete @token, urlApiUsers(@other.id)
+      .then (response) ->
+        test.equal response.statusCode, 403
+        test.equal response.body, errorMessageForEndForbiddenInsufficientRights
+
+        # wrong privilege
+        testHelperGrantUserRights 'operator', ['canDeleteUsers(100)']
       .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: 'canAccessCockpit\ncanDeleteUsers'
+        testHelperDelete @token, urlApiUsers(@other.id)
+      .then (response) ->
+        test.equal response.statusCode, 403
+        test.equal response.body, errorMessageForEndForbiddenInsufficientRights
+
+        # single user privilege
+        testHelperGrantUserRights 'operator', ["canDeleteUsers(#{@other.id})"]
       .then ->
-        insertFakeUsers(3)
-      .then ->
-        command_serve('cockpit')
-      .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
+        testHelperDelete @token, urlApiUsers(@other.id)
+      .then (response) ->
         test.equal response.statusCode, 200
-        token = response.body.token
+        test.equal response.body, null
 
-        requestPromise(
-          method: 'DELETE'
-          url: envStringBaseUrl + urlApiUsers(2)
-          headers:
-            authorization: "Bearer #{token}"
-          json: true
-        )
-      .then ([response]) ->
+        selectUser()
+      .then (users) ->
+        test.equal users.length, 2
+
+        # unprivileged
+        testHelperDelete @token, urlApiUsers(@another.id)
+      .then (response) ->
+        test.equal response.statusCode, 403
+        test.equal response.body, errorMessageForEndForbiddenInsufficientRights
+
+        # privileged
+        testHelperGrantUserRights 'operator', ["canDeleteUsers()"]
+      .then ->
+        testHelperDelete @token, urlApiUsers(@another.id)
+      .then (response) ->
         test.equal response.statusCode, 200
+        test.equal response.body, null
 
-        # TODO test that user is actually deleted
+        selectUser()
+      .then (users) ->
+        test.equal users.length, 1
+
+        # privileged but not found
+        testHelperDelete @token, urlApiUsers(@another.id)
+      .then (response) ->
+        test.equal response.statusCode, 404
+
+      .finally ->
         shutdown()
       .then ->
         test.done()

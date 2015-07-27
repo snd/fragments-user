@@ -1,304 +1,108 @@
-module.exports.testApiCurrentUserPatchForbidden = (
-  command_serve
+module.exports.testApiCurrentUserPatch = (
   pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
-  urlApiCurrentUser
-  requestPromise
-  insertUser
-) ->
-  (test) ->
-    pgDropCreateMigrate()
-      .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: ''
-      .then ->
-        command_serve('cockpit')
-      .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        token = response.body.token
-
-        requestPromise(
-          method: 'PATCH'
-          url: envStringBaseUrl + urlApiCurrentUser()
-          headers:
-            authorization: "Bearer #{token}"
-          json: true
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 403
-
-        shutdown()
-      .then ->
-        test.done()
-
-module.exports.testApiCurrentUserPatchUnprocessable = (
+  testHelperInsertUser
   command_serve
-  pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
+  testHelperPatch
+  testHelperLogin
   urlApiCurrentUser
-  requestPromise
-  insertUser
-) ->
-  (test) ->
-    pgDropCreateMigrate()
-      .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: 'canAccessCockpit'
-      .then ->
-        command_serve('cockpit')
-      .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        token = response.body.token
-
-        requestPromise(
-          method: 'PATCH'
-          url: envStringBaseUrl + urlApiCurrentUser()
-          body:
-            email: 'dkjdlkf'
-            name: ''
-            password: ''
-            rights: 'canAccessAllAndEverything # trying to escalate own rights should fail'
-          headers:
-            authorization: "Bearer #{token}"
-          json: true
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 422
-        test.deepEqual response.body,
-          name: 'must not be the empty string'
-          password: 'must not be the empty string'
-          email: 'must be an email address'
-          rights: 'you are not allowed to set your own rights'
-
-        shutdown()
-      .then ->
-        test.done()
-
-module.exports.testApiCurrentUserPatchUnprocessableTaken = (
-  command_serve
-  pgDropCreateMigrate
+  errorMessageForEndForbiddenTokenRequired
   shutdown
-  envStringBaseUrl
-  urlApiLogin
-  urlApiCurrentUser
-  requestPromise
-  insertUser
 ) ->
   (test) ->
     pgDropCreateMigrate()
       .bind({})
+
       .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: 'canAccessCockpit'
+        testHelperInsertUser('operator', 'operator@example.com', 'topsecret')
       .then ->
-        insertUser
-          email: 'othertest@example.com'
-          name: 'otherexampleuser'
-          password: 'topsecret'
-          rights: 'canAccessCockpit'
-      .then ->
+        testHelperInsertUser('other', 'other@example.com', 'topsecret')
+
         command_serve('cockpit')
       .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        this.token = response.body.token
 
-        requestPromise(
-          method: 'PATCH'
-          url: envStringBaseUrl + urlApiCurrentUser()
-          body:
-            email: 'othertest@example.com'
-            name: 'otherexampleuser'
-            password: 'topsecret'
-          headers:
-            authorization: "Bearer #{this.token}"
-          json: true
-        )
-      .then ([response]) ->
+        # unauthenticated
+        testHelperPatch null, urlApiCurrentUser(),
+          name: 'operatorchanged'
+          email: 'emailchanged'
+          password: 'topsecretchanged'
+      .then (response) ->
+        test.equal response.statusCode, 403
+        test.equal response.body, errorMessageForEndForbiddenTokenRequired
+
+        # authenticate
+        testHelperLogin(test, 'operator', 'topsecret')
+      .then (token) ->
+        @token = token
+
+        # unprocessable
+        testHelperPatch @token, urlApiCurrentUser(),
+          email: 'dkjdlkf'
+          name: ''
+          password: ''
+          rights: 'canAccessAllAndEverything # trying to escalate own rights should fail'
+      .then (response) ->
+        test.equal response.statusCode, 422
+        test.deepEqual response.body,
+          name: 'must not be empty'
+          password: 'must not be empty'
+          email: 'must be an email address'
+          rights: 'you are not allowed to set your own rights'
+
+        # unprocessable because taken
+
+        testHelperPatch @token, urlApiCurrentUser(),
+          email: 'other@example.com'
+          name: 'other'
+          password: 'topsecret'
+      .then (response) ->
         test.equal response.statusCode, 422
         test.deepEqual response.body,
           name: 'taken'
           email: 'taken'
 
-        requestPromise(
-          method: 'PATCH'
-          url: envStringBaseUrl + urlApiCurrentUser()
-          body:
-            email: 'othertest@example.com'
-            name: 'exampleuser'
-            password: 'topsecret'
-          headers:
-            authorization: "Bearer #{this.token}"
-          json: true
-        )
-      .then ([response]) ->
+        testHelperPatch @token, urlApiCurrentUser(),
+          email: 'other@example.com'
+          name: 'another'
+          password: 'topsecret'
+      .then (response) ->
         test.equal response.statusCode, 422
         test.deepEqual response.body,
           email: 'taken'
 
-        requestPromise(
-          method: 'PATCH'
-          url: envStringBaseUrl + urlApiCurrentUser()
-          body:
-            email: 'test@example.com'
-            name: 'otherexampleuser'
-            password: 'topsecret'
-          headers:
-            authorization: "Bearer #{this.token}"
-          json: true
-        )
-      .then ([response]) ->
+        testHelperPatch @token, urlApiCurrentUser(),
+          email: 'another@example.com'
+          name: 'other'
+          password: 'topsecret'
+      .then (response) ->
         test.equal response.statusCode, 422
         test.deepEqual response.body,
           name: 'taken'
 
-        shutdown()
-      .then ->
-        test.done()
-
-module.exports.testApiCurrentUserPatchOkNoChange = (
-  command_serve
-  pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
-  urlApiCurrentUser
-  requestPromise
-  insertUser
-) ->
-  (test) ->
-    pgDropCreateMigrate()
-      .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
+        # success but not change
+        testHelperPatch @token, urlApiCurrentUser(),
+          email: 'operator@example.com'
+          name: 'operator'
           password: 'topsecret'
-          rights: 'canAccessCockpit'
-      .then ->
-        command_serve('cockpit')
-      .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
+      .then (response) ->
         test.equal response.statusCode, 200
-        token = response.body.token
+        test.equal response.body.email, 'operator@example.com'
+        test.equal response.body.name, 'operator'
+        test.equal response.body.rights, ''
+        test.equal response.body.password, null
 
-        requestPromise(
-          method: 'PATCH'
-          url: envStringBaseUrl + urlApiCurrentUser()
-          body:
-            email: 'test@example.com'
-            name: 'exampleuser'
-            password: 'topsecret'
-          headers:
-            authorization: "Bearer #{token}"
-          json: true
-        )
-      .then ([response]) ->
+        # success with change
+        testHelperPatch @token, urlApiCurrentUser(),
+          email: 'operatorchanged@example.com'
+          name: 'operatorchanged'
+          password: 'topsecretchanged'
+      .then (response) ->
         test.equal response.statusCode, 200
-        test.equal response.body.email, 'test@example.com'
-        test.equal response.body.name, 'exampleuser'
-        test.equal response.body.rights, 'canAccessCockpit'
+        test.equal response.body.email, 'operatorchanged@example.com'
+        test.equal response.body.name, 'operatorchanged'
+        test.equal response.body.rights, ''
+        test.equal response.body.password, null
 
-        shutdown()
-      .then ->
-        test.done()
-
-module.exports.testApiCurrentUserPatchOkChange = (
-  command_serve
-  pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
-  urlApiCurrentUser
-  requestPromise
-  insertUser
-) ->
-  (test) ->
-    pgDropCreateMigrate()
-      .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: 'canAccessCockpit'
-      .then ->
-        command_serve('cockpit')
-      .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        token = response.body.token
-
-        requestPromise(
-          method: 'PATCH'
-          url: envStringBaseUrl + urlApiCurrentUser()
-          body:
-            email: 'changedtest@example.com'
-            name: 'changedexampleuser'
-            password: 'changedtopsecret'
-          headers:
-            authorization: "Bearer #{token}"
-          json: true
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        test.equal response.body.email, 'changedtest@example.com'
-        test.equal response.body.name, 'changedexampleuser'
-        test.equal response.body.rights, 'canAccessCockpit'
-
+      .finally ->
         shutdown()
       .then ->
         test.done()

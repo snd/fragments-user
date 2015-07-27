@@ -17,6 +17,12 @@ module.exports.urlApiLogin = (
   ->
     urlApi('login')
 
+module.exports.urlApiSignup = (
+  urlApi
+) ->
+  ->
+    urlApi('signup')
+
 module.exports.urlApiCurrentUser = (
   urlApi
 ) ->

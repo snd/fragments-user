@@ -6,7 +6,7 @@ module.exports.apiLogin = (
   POST
   urlApiLogin
   newJwt
-  loginValidator
+  validateLogin
   firstUserWhereLogin
   _
 ) ->
@@ -16,13 +16,13 @@ module.exports.apiLogin = (
     endUnprocessableText
     endJSON
   ) ->
-    errors = loginValidator body
+    errors = validateLogin body
     if errors?
       endUnprocessableJSON errors
       return
     firstUserWhereLogin(body).then (user) ->
       unless user?
-        endUnprocessableText 'invalid username or password'
+        endUnprocessableText 'invalid identifier (username or email) or password'
         return
 
       token = newJwt({id: user.id})

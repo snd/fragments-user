@@ -1,98 +1,40 @@
-module.exports.testApiCurrentUserGetForbidden = (
-  command_serve
+module.exports.testApiCurrentUserGet = (
   pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
+  testHelperInsertUser
+  testHelperLogin
+  testHelperGet
+  command_serve
   urlApiCurrentUser
-  requestPromise
-  insertUser
+  errorMessageForEndForbiddenTokenRequired
+  shutdown
 ) ->
   (test) ->
     pgDropCreateMigrate()
+      .bind({})
       .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: ''
+        testHelperInsertUser('operator', 'operator@example.com', 'topsecret')
       .then ->
+
         command_serve('cockpit')
       .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        token = response.body.token
-        test.ok token?
 
-        requestPromise(
-          method: 'GET'
-          url: envStringBaseUrl + urlApiCurrentUser()
-          headers:
-            authorization: "Bearer #{token}"
-          json: true
-        )
-      .then ([response]) ->
+        testHelperGet(null, urlApiCurrentUser())
+      .then (response) ->
         test.equal response.statusCode, 403
+        test.equal response.body, errorMessageForEndForbiddenTokenRequired
 
-        shutdown()
-      .then ->
-        test.done()
-
-module.exports.testApiCurrentUserGetOk = (
-  command_serve
-  pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
-  urlApiCurrentUser
-  requestPromise
-  insertUser
-) ->
-  (test) ->
-    pgDropCreateMigrate()
-      .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: 'canAccessCockpit'
-      .then ->
-        command_serve('cockpit')
-      .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
+        testHelperLogin(test, 'operator', 'topsecret')
+      .then (token) ->
+        @token = token
+        testHelperGet(@token, urlApiCurrentUser())
+      .then (response) ->
         test.equal response.statusCode, 200
-        token = response.body.token
+        test.equal response.body.email, 'operator@example.com'
+        test.equal response.body.name, 'operator'
+        test.equal response.body.rights, ''
+        test.equal response.body.password, null
 
-        requestPromise(
-          method: 'GET'
-          url: envStringBaseUrl + urlApiCurrentUser()
-          headers:
-            authorization: "Bearer #{token}"
-          json: true
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        test.equal response.body.email, 'test@example.com'
-        test.equal response.body.name, 'exampleuser'
-        test.equal response.body.rights, 'canAccessCockpit'
-        test.ok not response.body.password?
-
+      .finally ->
         shutdown()
       .then ->
         test.done()

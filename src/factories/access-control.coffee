@@ -70,12 +70,6 @@ module.exports.currentUserHasRight = (
       currentRightsObject[right + '(' + filteredArgs.join(',') + ')']?
     return result
 
-module.exports.canAccessCockpit = (
-  currentUserHasRight
-) ->
-  ->
-    currentUserHasRight 'canAccessCockpit'
-
 module.exports.canReadUsers = (
   currentUserHasRight
 ) ->

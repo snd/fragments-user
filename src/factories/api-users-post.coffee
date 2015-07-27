@@ -4,19 +4,23 @@ module.exports.apiUsersPost = (
 ) ->
   POST urlApiUsers(), (
     canCreateUsers
-    endForbidden
+    endForbiddenTokenRequired
+    endForbiddenInsufficientRights
     setHeaderLocation
     endCreatedJSON
-    userInsertValidator
+    validateUserInsert
     insertUser
     endUnprocessableJSON
     urlApiUsers
     body
     omitPassword
+    currentUser
   ) ->
+    unless currentUser?
+      return endForbiddenTokenRequired()
     unless canCreateUsers()
-      return endForbidden()
-    userInsertValidator(body).then (errors) ->
+      return endForbiddenInsufficientRights()
+    validateUserInsert(body).then (errors) ->
       if errors?
         return endUnprocessableJSON errors
       insertUser(body).then (inserted) ->

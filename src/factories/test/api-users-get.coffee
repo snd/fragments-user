@@ -1,133 +1,51 @@
-module.exports.testApiUsersGetForbidden = (
-  command_serve
+module.exports.testApiUsersGet = (
   pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
+  command_serve
+  testHelperInsertUser
+  testHelperGrantUserRights
+  testHelperGet
+  testHelperLogin
   urlApiUsers
-  requestPromise
-  insertUser
+  errorMessageForEndForbiddenTokenRequired
+  errorMessageForEndForbiddenInsufficientRights
+  shutdown
 ) ->
   (test) ->
     pgDropCreateMigrate()
+      .bind({})
       .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: 'canAccessCockpit'
+        testHelperInsertUser('operator', 'operator@example.com', 'topsecret')
+      .then ->
+        testHelperInsertUser('a', 'a@yahoo.com', 'topsecret')
+      .then ->
+        testHelperInsertUser('b', 'b@gmail.com', 'topsecret')
+      .then ->
+        testHelperInsertUser('c', 'c@yahoo.com', 'topsecret')
       .then ->
         command_serve('cockpit')
       .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        token = response.body.token
 
-        requestPromise(
-          method: 'GET'
-          url: envStringBaseUrl + urlApiUsers()
-          headers:
-            authorization: "Bearer #{token}"
-          json: true
-        )
-      .then ([response]) ->
+        # unauthenticated
+        testHelperGet null, urlApiUsers()
+      .then (response) ->
         test.equal response.statusCode, 403
+        test.equal response.body, errorMessageForEndForbiddenTokenRequired
 
-        shutdown()
-      .then ->
-        test.done()
+        # authenticate
+        testHelperLogin(test, 'operator', 'topsecret')
+      .then (token) ->
+        @token = token
 
-module.exports.testApiUsersGetOkAll = (
-  command_serve
-  pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
-  urlApiUsers
-  requestPromise
-  insertFakeUsers
-  insertUser
-) ->
-  (test) ->
-    pgDropCreateMigrate()
-      .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: 'canAccessCockpit\ncanReadUsers'
-      .then ->
-        insertFakeUsers(10)
-      .then ->
-        command_serve('cockpit')
-      .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        token = response.body.token
+        # unprivileged
+        testHelperGet @token, urlApiUsers()
+      .then (response) ->
+        test.equal response.statusCode, 403
+        test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        requestPromise(
-          method: 'GET'
-          url: envStringBaseUrl + urlApiUsers()
-          headers:
-            authorization: "Bearer #{token}"
-          json: true
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        test.equal response.body.length, 11
+        # make privileged
+        testHelperGrantUserRights 'operator', ['canReadUsers']
 
-        shutdown()
-      .then ->
-        test.done()
-
-module.exports.testApiUsersGetUnprocessable = (
-  command_serve
-  pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
-  urlApiUsers
-  requestPromise
-  insertUser
-) ->
-  (test) ->
-    pgDropCreateMigrate()
-      .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: 'canAccessCockpit\ncanReadUsers'
-      .then ->
-        command_serve('cockpit')
-      .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        token = response.body.token
+        # unprocessable
 
         querystring = [
           'limit=a'
@@ -137,14 +55,8 @@ module.exports.testApiUsersGetUnprocessable = (
           'where[id][gt]=ab'
         ].join('&')
 
-        requestPromise(
-          method: 'GET'
-          url: envStringBaseUrl + urlApiUsers() + '?' + querystring
-          headers:
-            authorization: "Bearer #{token}"
-          json: true
-        )
-      .then ([response]) ->
+        testHelperGet @token, urlApiUsers() + '?' + querystring
+      .then (response) ->
         test.equal response.statusCode, 422
         test.deepEqual response.body,
           query:
@@ -160,60 +72,13 @@ module.exports.testApiUsersGetUnprocessable = (
             asc: 'must be either the string `true` or the string `false`',
             where: { id: { gt: 'must be parsable as an integer' } }
 
-        shutdown()
-      .then ->
-        test.done()
-
-module.exports.testApiUsersGetOkFiltered = (
-  command_serve
-  pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
-  urlApiUsers
-  requestPromise
-  insertUser
-) ->
-  (test) ->
-    pgDropCreateMigrate()
-      .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: 'canAccessCockpit\ncanReadUsers'
-      .then ->
-        insertUser
-          email: 'a@yahoo.com'
-          name: 'a'
-          password: 'topsecret'
-          rights: ''
-      .then ->
-        insertUser
-          email: 'b@gmail.com'
-          name: 'b'
-          password: 'topsecret'
-          rights: ''
-      .then ->
-        insertUser
-          email: 'c@yahoo.de'
-          name: 'c'
-          password: 'topsecret'
-          rights: ''
-      .then ->
-        command_serve('cockpit')
-      .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
+        # success all
+        testHelperGet @token, urlApiUsers()
+      .then (response) ->
         test.equal response.statusCode, 200
-        token = response.body.token
+        test.equal response.body.length, 4
+
+        # success filtered
 
         querystring = [
           'where[email][contains]=yahoo'
@@ -221,19 +86,14 @@ module.exports.testApiUsersGetOkFiltered = (
           'asc=false'
         ].join('&')
 
-        requestPromise(
-          method: 'GET'
-          url: envStringBaseUrl + urlApiUsers() + '?' + querystring
-          headers:
-            authorization: "Bearer #{token}"
-          json: true
-        )
-      .then ([response]) ->
+        testHelperGet @token, urlApiUsers() + '?' + querystring
+      .then (response) ->
         test.equal response.statusCode, 200
         test.equal response.body.length, 2
         test.equal response.body[0].name, 'c'
         test.equal response.body[1].name, 'a'
 
+      .finally ->
         shutdown()
       .then ->
         test.done()

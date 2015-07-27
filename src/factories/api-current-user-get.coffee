@@ -5,8 +5,8 @@ module.exports.apiCurrentUserGet = (
   GET urlApiCurrentUser(), (
     currentUser
     endJSON
-    endForbidden
+    endForbiddenTokenRequired
   ) ->
     unless currentUser?
-      return endForbidden()
+      return endForbiddenTokenRequired()
     endJSON currentUser

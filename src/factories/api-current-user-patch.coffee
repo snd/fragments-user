@@ -6,17 +6,17 @@ module.exports.apiCurrentUserPatch = (
     currentUser
     body
     omitPassword
-    selfUpdateValidator
+    endForbiddenTokenRequired
+    validateSelfUpdate
     endUnprocessableJSON
     endJSON
-    canAccessCockpit
     updateUserWhereId
   ) ->
-    unless canAccessCockpit()
-      return endForbidden()
-    selfUpdateValidator(body, currentUser.id).then (errors) ->
+    unless currentUser?
+      return endForbiddenTokenRequired()
+    validateSelfUpdate(body, currentUser.id).then (errors) ->
       if errors?
         return endUnprocessableJSON errors
       delete body.rights
       updateUserWhereId(body, currentUser.id).then (updated) ->
-        endJSON omitPassword updated
+        endJSON omitPassword updated[0]

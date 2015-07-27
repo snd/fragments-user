@@ -8,13 +8,18 @@ module.exports.apiUsersGet = (
     siv
     endJSON
     endForbidden
+    endForbiddenTokenRequired
+    endForbiddenInsufficientRights
     endUnprocessableJSON
     canReadUsers
     omitPassword
+    currentUser
     _
   ) ->
+    unless currentUser?
+      return endForbiddenTokenRequired()
     unless canReadUsers()
-      return endForbidden()
+      return endForbiddenInsufficientRights()
 
     sql = userTable
     sql = siv.limit(sql, query)

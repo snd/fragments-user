@@ -6,3 +6,6 @@ module.exports.faker = ->
 
 module.exports.siv = ->
   require 'siv'
+
+module.exports.waechter = ->
+  require 'waechter'

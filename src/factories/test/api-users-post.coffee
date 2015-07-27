@@ -1,253 +1,123 @@
-module.exports.testApiUsersPostForbidden = (
-  command_serve
+module.exports.testApiUsersPost = (
   pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
+  command_serve
+  testHelperInsertUser
+  testHelperPost
+  testHelperLogin
+  testHelperGrantUserRights
   urlApiUsers
-  requestPromise
-  insertFakeUsers
-  insertUser
+  errorMessageForEndForbiddenTokenRequired
+  errorMessageForEndForbiddenInsufficientRights
+  shutdown
 ) ->
   (test) ->
     pgDropCreateMigrate()
       .bind({})
       .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
-          password: 'topsecret'
-          rights: 'canAccessCockpit'
+        testHelperInsertUser('operator', 'operator@example.com', 'topsecret')
       .then ->
         command_serve('cockpit')
       .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        this.token = response.body.token
 
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiUsers()
-          headers:
-            authorization: "Bearer #{this.token}"
-          json: true
-        )
-      .then ([response]) ->
+        # unauthenticated
+        testHelperPost null, urlApiUsers(),
+          email: 'other@example.com'
+          name: 'other'
+          password: 'topsecret'
+          rights: ''
+      .then (response) ->
         test.equal response.statusCode, 403
+        test.equal response.body, errorMessageForEndForbiddenTokenRequired
 
-        shutdown()
-      .then ->
-        test.done()
+        # authenticate
+        testHelperLogin(test, 'operator', 'topsecret')
+      .then (token) ->
+        @token = token
 
-module.exports.testApiUsersPostUnprocessable = (
-  command_serve
-  pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
-  urlApiUsers
-  requestPromise
-  insertFakeUsers
-  insertUser
-) ->
-  (test) ->
-    pgDropCreateMigrate()
-      .bind({})
-      .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
+        # unprivileged
+        testHelperPost @token, urlApiUsers(),
+          email: 'other@example.com'
+          name: 'other'
           password: 'topsecret'
-          rights: 'canAccessCockpit\ncanCreateUsers'
-      .then ->
-        command_serve('cockpit')
-      .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        this.token = response.body.token
+          rights: ''
+      .then (response) ->
+        test.equal response.statusCode, 403
+        test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiUsers()
-          body:
-            email: 'dkjdlkf'
-            name: ''
-            password: ''
-          headers:
-            authorization: "Bearer #{this.token}"
-          json: true
-        )
-      .then ([response]) ->
+        # continue with privileged
+        testHelperGrantUserRights('operator', ['canCreateUsers'])
+      .then ->
+
+        # unprocessable
+        testHelperPost @token, urlApiUsers(),
+          email: 'dkjdlkf'
+          name: ''
+          password: ''
+      .then (response) ->
         test.equal response.statusCode, 422
         test.deepEqual response.body,
-          name: 'must not be the empty string'
-          password: 'must not be the empty string'
+          name: 'must not be empty'
+          password: 'must not be empty'
           email: 'must be an email address'
-          rights: 'must not be null or undefined'
 
-        shutdown()
-      .then ->
-        test.done()
+        # unprocessable because taken
 
-module.exports.testApiUsersPostUnprocessableTaken = (
-  command_serve
-  pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
-  urlApiUsers
-  requestPromise
-  insertFakeUsers
-  insertUser
-) ->
-  (test) ->
-    pgDropCreateMigrate()
-      .bind({})
-      .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
+        testHelperPost @token, urlApiUsers(),
+          email: 'operator@example.com'
+          name: 'other'
           password: 'topsecret'
-          rights: 'canAccessCockpit\ncanCreateUsers'
-      .then ->
-        command_serve('cockpit')
-      .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        this.token = response.body.token
-
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiUsers()
-          body:
-            email: 'test@example.com'
-            name: 'user'
-            password: 'opensesame'
-            rights: ''
-          headers:
-            authorization: "Bearer #{this.token}"
-          json: true
-        )
-      .then ([response]) ->
+      .then (response) ->
         test.equal response.statusCode, 422
         test.deepEqual response.body,
           email: 'taken'
 
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiUsers()
-          body:
-            email: 'user@example.com'
-            name: 'exampleuser'
-            password: 'opensesame'
-            rights: ''
-          headers:
-            authorization: "Bearer #{this.token}"
-          json: true
-        )
-      .then ([response]) ->
+        testHelperPost @token, urlApiUsers(),
+          email: 'other@example.com'
+          name: 'operator'
+          password: 'topsecret'
+      .then (response) ->
         test.equal response.statusCode, 422
         test.deepEqual response.body,
           name: 'taken'
 
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiUsers()
-          body:
-            email: 'test@example.com'
-            name: 'exampleuser'
-            password: 'opensesame'
-            rights: ''
-          headers:
-            authorization: "Bearer #{this.token}"
-          json: true
-        )
-      .then ([response]) ->
+        testHelperPost @token, urlApiUsers(),
+          email: 'operator@example.com'
+          name: 'operator'
+          password: 'topsecret'
+      .then (response) ->
         test.equal response.statusCode, 422
         test.deepEqual response.body,
           email: 'taken'
           name: 'taken'
 
-        shutdown()
-      .then ->
-        test.done()
+        # success
 
-module.exports.testApiUsersPostOk = (
-  command_serve
-  pgDropCreateMigrate
-  shutdown
-  envStringBaseUrl
-  urlApiLogin
-  urlApiUsers
-  requestPromise
-  insertFakeUsers
-  insertUser
-) ->
-  (test) ->
-    pgDropCreateMigrate()
-      .bind({})
-      .then ->
-        insertUser
-          email: 'test@example.com'
-          name: 'exampleuser'
+        testHelperPost @token, urlApiUsers(),
+          email: 'other@example.com'
+          name: 'other'
           password: 'topsecret'
-          rights: 'canAccessCockpit\ncanCreateUsers'
-      .then ->
-        command_serve('cockpit')
-      .then ->
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiLogin()
-          json: true
-          body:
-            username: 'exampleuser'
-            password: 'topsecret'
-        )
-      .then ([response]) ->
-        test.equal response.statusCode, 200
-        this.token = response.body.token
-
-        requestPromise(
-          method: 'POST'
-          url: envStringBaseUrl + urlApiUsers()
-          body:
-            email: 'user@example.com'
-            name: 'user'
-            password: 'opensesame'
-            rights: ''
-          headers:
-            authorization: "Bearer #{this.token}"
-          json: true
-        )
-      .then ([response]) ->
+      .then (response) ->
         test.equal response.statusCode, 201
-        test.equal response.body.email, 'user@example.com'
-        test.equal response.body.name, 'user'
+        test.equal response.body.email, 'other@example.com'
+        test.equal response.body.name, 'other'
+        test.equal response.body.rights, ''
         test.equal response.headers.location, urlApiUsers(response.body.id)
+
+        # can create user with rights
+
+        testHelperPost @token, urlApiUsers(),
+          email: 'another@example.com'
+          name: 'another'
+          password: 'topsecret'
+          rights: 'canCreateUsers'
+      .then (response) ->
+        test.equal response.statusCode, 201
+        test.equal response.body.email, 'another@example.com'
+        test.equal response.body.name, 'another'
+        test.equal response.body.rights, 'canCreateUsers'
+        test.equal response.headers.location, urlApiUsers(response.body.id)
+
+      .finally ->
         shutdown()
       .then ->
         test.done()

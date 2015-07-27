@@ -1,27 +1,13 @@
-module.exports.cockpitAccessControlMiddleware = (
-  MIDDLEWARE
-) ->
-  MIDDLEWARE (
-    matchCurrentUrl
-    urlApi
-    canAccessCockpit
-    endForbidden
-    next
-  ) ->
-    if matchCurrentUrl(urlApi('*')) and not canAccessCockpit()
-      endForbidden()
-    else
-      next()
-
 module.exports.cockpit = (
   sequenz
   MIDDLEWARE
   commonMiddlewarePrelude
-  cockpitAccessControlMiddleware
 
+  apiSignup
   apiLogin
   apiCurrentUserGet
   apiCurrentUserPatch
+  apiCurrentUserDelete
   apiUsersGet
   apiUsersPost
   apiUserGet
@@ -31,15 +17,19 @@ module.exports.cockpit = (
   sequenz [
     commonMiddlewarePrelude
 
-    apiLogin
+    # if you don't want to allow signup just don't include this route
+    apiSignup
 
-    # everything except the login action requires user to have right to access cockpit
-    cockpitAccessControlMiddleware
+    apiLogin
 
     apiCurrentUserGet
     apiCurrentUserPatch
+    # if you don't want to allow users to delete themselves just don't include this route
+    apiCurrentUserDelete
+
     apiUsersGet
     apiUsersPost
+
     apiUserGet
     apiUserPatch
     apiUserDelete

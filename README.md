@@ -94,7 +94,7 @@ fake:users {count} - insert `count` fake users
 ```
 
 add
-[migrations/20150327204310-add-user-table.sql](migrations/20150327204310-add-user-table.sql)
+[migrations/20150327204310-users.sql](migrations/20150327204310-users.sql)
 to the migrations folder of your app.
 
 reset your database if necessary:
@@ -139,7 +139,7 @@ refer to them for additional documentation (especially for edge cases).
 use the code as inspiration to build your own API actions.
 most actions are only a few lines of code.
 
-#### [login !](src/factories/api-login.coffee) ([tests](src/factories/test/api-login.coffee))
+#### [login !](src/factories/api-login-post.coffee) ([tests](src/factories/test/api-login-post.coffee))
 
 login to get an access **token** in the response:
 ```

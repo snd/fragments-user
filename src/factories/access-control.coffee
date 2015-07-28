@@ -69,27 +69,3 @@ module.exports.currentUserHasRight = (
     else
       currentRightsObject[right + '(' + filteredArgs.join(',') + ')']?
     return result
-
-module.exports.canReadUsers = (
-  currentUserHasRight
-) ->
-  (id) ->
-    currentUserHasRight 'canReadUsers', id
-
-module.exports.canCreateUsers = (
-  currentUserHasRight
-) ->
-  ->
-    currentUserHasRight 'canCreateUsers'
-
-module.exports.canUpdateUsers = (
-  currentUserHasRight
-) ->
-  (id) ->
-    currentUserHasRight 'canUpdateUsers', id
-
-module.exports.canDeleteUsers = (
-  currentUserHasRight
-) ->
-  (id) ->
-    currentUserHasRight 'canDeleteUsers', id

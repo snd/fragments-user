@@ -57,7 +57,7 @@ module.exports.validateUserInsert = (
 ) ->
   waechter.schemasToLazyAsyncValidator(
     schemaUserShared
-    {rights: waechter.optional(waechter.string)}
+    {rights: waechter.maybe(waechter.string)}
     idToSchemaUserTakenAsync()
   )
 
@@ -82,6 +82,6 @@ module.exports.validateUserUpdate = (
   (user, id) ->
     waechter.schemasToLazyAsyncValidator(
       schemaUserShared
-      {rights: waechter.optional(waechter.string)}
+      {rights: waechter.maybe(waechter.string)}
       idToSchemaUserTakenAsync(id)
     ) (user)

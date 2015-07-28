@@ -1,4 +1,4 @@
-module.exports.cockpit = (
+module.exports.server = (
   sequenz
   MIDDLEWARE
   commonMiddlewarePrelude

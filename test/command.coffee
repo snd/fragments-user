@@ -90,18 +90,18 @@ module.exports =
         .then (users) ->
           this.user = omitPassword users[0]
           test.ok this.user.id?
-          grantUserRightWhereId('canAccessCockpit', this.user.id)
-        .then ->
           grantUserRightWhereId('canReadUsers', this.user.id)
         .then ->
           grantUserRightWhereId('canCreateUsers', this.user.id)
         .then ->
+          grantUserRightWhereId('canDeleteUsers', this.user.id)
+        .then ->
           command_rights(this.user.id)
         .then (rights) ->
           test.deepEqual rights, [
-            'canAccessCockpit'
             'canReadUsers'
             'canCreateUsers'
+            'canDeleteUsers'
           ]
           test.done()
 

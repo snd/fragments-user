@@ -15,7 +15,7 @@ module.exports.testApiSignupPost = (
       .then ->
         testHelperInsertUser('operator', 'operator@example.com', 'topsecret')
       .then ->
-        command_serve('cockpit')
+        command_serve()
 
         # unprocessable
 

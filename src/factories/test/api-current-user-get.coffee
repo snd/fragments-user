@@ -15,7 +15,7 @@ module.exports.testApiCurrentUserGet = (
         testHelperInsertUser('operator', 'operator@example.com', 'topsecret')
       .then ->
 
-        command_serve('cockpit')
+        command_serve()
       .then ->
 
         testHelperGet(null, urlApiCurrentUser())

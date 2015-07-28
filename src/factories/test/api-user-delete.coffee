@@ -32,7 +32,7 @@ module.exports.testApiUserDelete = (
       .then (users) ->
         test.equal users.length, 3
 
-        command_serve('cockpit')
+        command_serve()
       .then ->
 
         # unauthenticated

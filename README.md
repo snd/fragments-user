@@ -117,13 +117,13 @@ confirm that the user is inserted by listing all users:
 ./app users
 ```
 
-start the cockpit application:
+start the server:
 ```
-./app serve cockpit
+./app serve
 ```
-you can find the cockpit application in [src/factories/middleware.coffee](src/factories/middleware.coffee).
+you can find the `server` callback/middleware in [src/factories/server.coffee](src/factories/server.coffee).
 it only contains a user API.
-if you need more than that - and you probably do - just copy the factory `cockpit` over to your application
+if you need more than that - and you probably do - just copy the [`server`](src/factories/server.coffee) factory over to your application
 and extend it.
 
 ### customization

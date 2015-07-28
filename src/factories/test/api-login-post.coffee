@@ -12,7 +12,7 @@ module.exports.testApiLoginPost = (
     pgDropCreateMigrate()
       .bind({})
       .then ->
-        command_serve('cockpit')
+        command_serve()
       .then ->
 
         # unprocessable no body

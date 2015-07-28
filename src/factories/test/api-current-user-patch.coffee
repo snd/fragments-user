@@ -17,7 +17,7 @@ module.exports.testApiCurrentUserPatch = (
       .then ->
         testHelperInsertUser('other', 'other@example.com', 'topsecret')
 
-        command_serve('cockpit')
+        command_serve()
       .then ->
 
         # unauthenticated

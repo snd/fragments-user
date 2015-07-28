@@ -28,7 +28,7 @@ module.exports.testApiUserPatch = (
         test.notEqual user.id, null
         @another = user
 
-        command_serve('cockpit')
+        command_serve()
       .then ->
 
         # unauthenticated

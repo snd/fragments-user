@@ -22,7 +22,7 @@ module.exports.testApiUsersGet = (
       .then ->
         testHelperInsertUser('c', 'c@yahoo.com', 'topsecret')
       .then ->
-        command_serve('cockpit')
+        command_serve()
       .then ->
 
         # unauthenticated

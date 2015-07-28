@@ -38,7 +38,7 @@
     "hinoki": "1.0.0-rc.2",
     "siv": "1.0.0-alpha.1",
     "faker": "3.0.0",
-    "waechter": "1.0.0-alpha.2"
+    "waechter": "1.0.0-alpha.3"
   },
   "devDependencies": {
     "coffee-script": "1.9.3",

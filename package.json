@@ -47,7 +47,7 @@
     "fragments-postgres": "1.0.0-beta.5"
   },
   "scripts": {
-    "compile": "coffee --bare --compile --output lib src",
+    "compile": "rm -r lib && coffee --no-header --bare --compile --output lib src",
     "prepublish": "npm run compile",
     "pretest": "npm run compile",
     "test": "nodeunit test/*.coffee"

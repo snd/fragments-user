@@ -43,10 +43,10 @@ module.exports.validateSignup = (
   schemaUserShared
   schemaUserRightsForbidden
   idToSchemaUserTakenAsync
+  _
 ) ->
   waechter.schemasToLazyAsyncValidator(
-    schemaUserShared
-    schemaUserRightsForbidden
+    _.merge({}, schemaUserShared, schemaUserRightsForbidden)
     idToSchemaUserTakenAsync()
   )
 
@@ -54,10 +54,10 @@ module.exports.validateUserInsert = (
   waechter
   schemaUserShared
   idToSchemaUserTakenAsync
+  _
 ) ->
   waechter.schemasToLazyAsyncValidator(
-    schemaUserShared
-    {rights: waechter.maybe(waechter.string)}
+    _.merge({}, schemaUserShared, {rights: waechter.undefinedOr(waechter.string)})
     idToSchemaUserTakenAsync()
   )
 
@@ -66,11 +66,11 @@ module.exports.validateSelfUpdate = (
   schemaUserShared
   schemaUserRightsForbidden
   idToSchemaUserTakenAsync
+  _
 ) ->
   (user, id) ->
     waechter.schemasToLazyAsyncValidator(
-      schemaUserShared
-      schemaUserRightsForbidden
+      _.merge({}, schemaUserShared, schemaUserRightsForbidden)
       idToSchemaUserTakenAsync(id)
     ) (user)
 
@@ -78,10 +78,10 @@ module.exports.validateUserUpdate = (
   waechter
   schemaUserShared
   idToSchemaUserTakenAsync
+  _
 ) ->
   (user, id) ->
     waechter.schemasToLazyAsyncValidator(
-      schemaUserShared
-      {rights: waechter.maybe(waechter.string)}
+      _.merge({}, schemaUserShared, {rights: waechter.undefinedOr(waechter.string)})
       idToSchemaUserTakenAsync(id)
     ) (user)

@@ -20,6 +20,18 @@ module.exports.testHelperGrantUserRights = (
       Promise.all(rights).each (right) ->
         grantUserRightWhereId(right, user.id)
 
+module.exports.testHelperRevokeUserRights = (
+  Promise
+  firstUserWhereName
+  revokeUserRightWhereId
+) ->
+  (name, rights) ->
+    firstUserWhereName(name).then (user) ->
+      unless user?
+        return Promise.reject new Error "no user named `#{name}`"
+      Promise.all(rights).each (right) ->
+        revokeUserRightWhereId(right, user.id)
+
 module.exports.testHelperRequest = (
   got
   envStringBaseUrl

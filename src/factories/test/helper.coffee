@@ -21,8 +21,9 @@ module.exports.testHelperGrantUserRights = (
         grantUserRightWhereId(right, user.id)
 
 module.exports.testHelperRequest = (
-  requestPromise
+  got
   envStringBaseUrl
+  Promise
 ) ->
   (token, method, path, body) ->
     # console.log
@@ -31,17 +32,23 @@ module.exports.testHelperRequest = (
     #   path: path
     #   body: body
 
+    url = envStringBaseUrl + path
+    # console.log url
     options =
       method: method
-      url: envStringBaseUrl + path
-      json: true
     if body?
       options.body = body
     if token?
       options.headers =
         authorization: "Bearer #{token}"
-    requestPromise(options).then ([response]) ->
-      response
+    Promise.resolve(got(url, options))
+      .catch got.HTTPError, (err) ->
+        return err.response
+      .then (res) ->
+        contentType = res.headers['content-type']
+        if contentType? and 0 is contentType.indexOf 'application/json'
+          res.body = JSON.parse res.body.toString()
+        return res
 
 module.exports.testHelperGet = (
   testHelperRequest

@@ -1,5 +1,5 @@
-module.exports.requestPromise = (Promise, request) ->
-  Promise.promisify(request)
+module.exports.got = ->
+  require 'got'
 
 module.exports.faker = ->
   require 'faker'

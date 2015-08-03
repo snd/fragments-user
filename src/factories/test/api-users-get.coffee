@@ -45,6 +45,7 @@ module.exports.testApiUsersGet = (
 
         console.log 'make privileged'
         testHelperGrantUserRights 'operator', ['canReadUsers']
+      .then ->
 
         console.log 'unprocessable'
 

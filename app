@@ -3,7 +3,7 @@
 var hinoki = require('hinoki');
 var fragments = require('fragments');
 var fragmentsPostgres = require('fragments-postgres');
-var fragmentsUser = require('./src/fragments-user');
+var fragmentsUser = require('./lib/fragments-user');
 
 var source = hinoki.source([
   fragmentsUser,

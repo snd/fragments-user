@@ -22,30 +22,31 @@ module.exports.testApiUsersGet = (
       .then ->
         testHelperInsertUser('c', 'c@yahoo.com', 'topsecret')
       .then ->
+
         command_serve()
       .then ->
 
-        # unauthenticated
+        console.log 'unauthenticated'
         testHelperGet null, urlApiUsers()
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenTokenRequired
 
-        # authenticate
+        console.log 'authenticate'
         testHelperLogin(test, 'operator', 'topsecret')
       .then (token) ->
         @token = token
 
-        # unprivileged
+        console.log 'unprivileged'
         testHelperGet @token, urlApiUsers()
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        # make privileged
+        console.log 'make privileged'
         testHelperGrantUserRights 'operator', ['canReadUsers']
 
-        # unprocessable
+        console.log 'unprocessable'
 
         querystring = [
           'limit=a'
@@ -72,13 +73,13 @@ module.exports.testApiUsersGet = (
             asc: 'must be either the string `true` or the string `false`',
             where: { id: { gt: 'must be parsable as an integer' } }
 
-        # success all
+        console.log 'success all'
         testHelperGet @token, urlApiUsers()
       .then (response) ->
         test.equal response.statusCode, 200
         test.equal response.body.length, 4
 
-        # success filtered
+        console.log 'success filtered'
 
         querystring = [
           'where[email][contains]=yahoo'

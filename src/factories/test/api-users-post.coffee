@@ -16,10 +16,11 @@ module.exports.testApiUsersPost = (
       .then ->
         testHelperInsertUser('operator', 'operator@example.com', 'topsecret')
       .then ->
+
         command_serve()
       .then ->
 
-        # unauthenticated
+        console.log 'unauthenticated'
         testHelperPost null, urlApiUsers(),
           email: 'other@example.com'
           name: 'other'
@@ -29,12 +30,12 @@ module.exports.testApiUsersPost = (
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenTokenRequired
 
-        # authenticate
+        console.log 'authenticate'
         testHelperLogin(test, 'operator', 'topsecret')
       .then (token) ->
         @token = token
 
-        # unprivileged
+        console.log 'unprivileged'
         testHelperPost @token, urlApiUsers(),
           email: 'other@example.com'
           name: 'other'
@@ -44,11 +45,11 @@ module.exports.testApiUsersPost = (
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        # continue with privileged
+        console.log 'continue with privileged'
         testHelperGrantUserRights('operator', ['canCreateUsers'])
       .then ->
 
-        # unprocessable
+        console.log 'unprocessable'
         testHelperPost @token, urlApiUsers(),
           email: 'dkjdlkf'
           name: ''
@@ -60,7 +61,7 @@ module.exports.testApiUsersPost = (
           password: 'must not be empty'
           email: 'must be an email address'
 
-        # unprocessable because taken
+        console.log 'unprocessable because taken'
 
         testHelperPost @token, urlApiUsers(),
           email: 'operator@example.com'
@@ -90,7 +91,7 @@ module.exports.testApiUsersPost = (
           email: 'taken'
           name: 'taken'
 
-        # success
+        console.log 'success'
 
         testHelperPost @token, urlApiUsers(),
           email: 'other@example.com'
@@ -103,7 +104,7 @@ module.exports.testApiUsersPost = (
         test.equal response.body.rights, ''
         test.equal response.headers.location, urlApiUsers(response.body.id)
 
-        # can create user with rights
+        console.log 'can create user with rights'
 
         testHelperPost @token, urlApiUsers(),
           email: 'another@example.com'

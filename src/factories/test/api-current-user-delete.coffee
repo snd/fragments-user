@@ -21,30 +21,30 @@ module.exports.testApiCurrentUserDelete = (
         command_serve()
       .then ->
 
-        # unauthenticated
+        console.log 'unauthenticated'
         testHelperDelete null, urlApiCurrentUser()
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenTokenRequired
 
-        # authenticate
+        console.log 'authenticate'
         testHelperLogin(test, 'operator', 'topsecret')
       .then (token) ->
         @token = token
 
-        # delete
+        console.log 'delete'
         testHelperDelete @token, urlApiCurrentUser()
       .then (response) ->
         test.equal response.statusCode, 200
-        test.equal response.body, null
+        test.equal response.body, ''
 
-        # cant get current user after delete
+        console.log 'cant get current user after delete'
         testHelperGet(@token, urlApiCurrentUser())
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenTokenRequired
 
-        # cant login after delete
+        console.log 'cant login after delete'
         testHelperPost null, urlApiLogin(),
           identifier: 'operator@example.com'
           password: 'topsecret'

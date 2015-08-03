@@ -15,9 +15,11 @@ module.exports.testApiSignupPost = (
       .then ->
         testHelperInsertUser('operator', 'operator@example.com', 'topsecret')
       .then ->
-        command_serve()
 
-        # unprocessable
+        command_serve()
+      .then ->
+
+        console.log 'unprocessable'
 
         testHelperPost null, urlApiSignup(), null
       .then (response) ->
@@ -40,7 +42,7 @@ module.exports.testApiSignupPost = (
           password: 'must be at least 8 characters long'
           rights: 'you are not allowed to set your own rights'
 
-        # unprocessable email taken
+        console.log 'unprocessable email taken'
         testHelperPost null, urlApiSignup(),
           email: 'operator@example.com'
           name: 'other'
@@ -50,7 +52,7 @@ module.exports.testApiSignupPost = (
         test.deepEqual response.body,
           email: 'taken'
 
-        # unprocessable name taken
+        console.log 'unprocessable name taken'
         testHelperPost null, urlApiSignup(),
           email: 'other@example.com'
           name: 'operator'
@@ -60,7 +62,7 @@ module.exports.testApiSignupPost = (
         test.deepEqual response.body,
           name: 'taken'
 
-        # unprocessable email and name taken
+        console.log 'unprocessable email and name taken'
         testHelperPost null, urlApiSignup(),
           email: 'operator@example.com'
           name: 'operator'
@@ -71,7 +73,7 @@ module.exports.testApiSignupPost = (
           email: 'taken'
           name: 'taken'
 
-        # success
+        console.log 'success'
         testHelperPost null, urlApiSignup(),
           email: 'other@example.com'
           name: 'other'
@@ -86,7 +88,7 @@ module.exports.testApiSignupPost = (
 
         @token = response.body.token
 
-        # a user that has signed up is logged in
+        console.log 'a user that has signed up is logged in'
         testHelperGet @token, urlApiCurrentUser()
       .then (response) ->
         test.equal response.statusCode, 200
@@ -95,7 +97,7 @@ module.exports.testApiSignupPost = (
         test.equal response.body.rights, ''
         test.equal response.body.password, null
 
-        # a user that has signed up can login
+        console.log 'a user that has signed up can login'
         testHelperPost null, urlApiLogin(),
           identifier: 'other'
           password: 'topsecret'

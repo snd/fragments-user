@@ -20,7 +20,7 @@ module.exports.testApiCurrentUserPatch = (
         command_serve()
       .then ->
 
-        # unauthenticated
+        console.log 'unauthenticated'
         testHelperPatch null, urlApiCurrentUser(),
           name: 'operatorchanged'
           email: 'emailchanged'
@@ -29,12 +29,12 @@ module.exports.testApiCurrentUserPatch = (
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenTokenRequired
 
-        # authenticate
+        console.log 'authenticate'
         testHelperLogin(test, 'operator', 'topsecret')
       .then (token) ->
         @token = token
 
-        # unprocessable
+        console.log 'unprocessable'
         testHelperPatch @token, urlApiCurrentUser(),
           email: 'dkjdlkf'
           name: ''
@@ -48,7 +48,7 @@ module.exports.testApiCurrentUserPatch = (
           email: 'must be an email address'
           rights: 'you are not allowed to set your own rights'
 
-        # unprocessable because taken
+        console.log 'unprocessable because taken'
 
         testHelperPatch @token, urlApiCurrentUser(),
           email: 'other@example.com'
@@ -78,7 +78,7 @@ module.exports.testApiCurrentUserPatch = (
         test.deepEqual response.body,
           name: 'taken'
 
-        # success but not change
+        console.log 'success but not change'
         testHelperPatch @token, urlApiCurrentUser(),
           email: 'operator@example.com'
           name: 'operator'
@@ -90,7 +90,7 @@ module.exports.testApiCurrentUserPatch = (
         test.equal response.body.rights, ''
         test.equal response.body.password, null
 
-        # success with change
+        console.log 'success with change'
         testHelperPatch @token, urlApiCurrentUser(),
           email: 'operatorchanged@example.com'
           name: 'operatorchanged'

@@ -31,24 +31,24 @@ module.exports.testApiUserPatch = (
         command_serve()
       .then ->
 
-        # unauthenticated
+        console.log 'unauthenticated'
         testHelperPatch null, urlApiUsers(@other.id)
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenTokenRequired
 
-        # authenticate
+        console.log 'authenticate'
         testHelperLogin(test, 'operator', 'topsecret')
       .then (token) ->
         @token = token
 
-        # unprivileged
+        console.log 'unprivileged'
         testHelperPatch @token, urlApiUsers(@other.id)
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        # wrong privilege
+        console.log 'wrong privilege'
         testHelperGrantUserRights 'operator', ['canUpdateUsers(100)']
       .then ->
         testHelperPatch @token, urlApiUsers(@other.id)
@@ -56,11 +56,11 @@ module.exports.testApiUserPatch = (
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        # continue with single user privilege
+        console.log 'continue with single user privilege'
         testHelperGrantUserRights 'operator', ["canUpdateUsers(#{@other.id})"]
       .then ->
 
-        # unprocessable
+        console.log 'unprocessable'
         testHelperPatch @token, urlApiUsers(@other.id),
           email: 'dkjdlkf'
           name: ''
@@ -72,7 +72,7 @@ module.exports.testApiUserPatch = (
           password: 'must not be empty'
           email: 'must be an email address'
 
-        # unprocessable because taken
+        console.log 'unprocessable because taken'
         testHelperPatch @token, urlApiUsers(@other.id),
           email: 'operator@example.com'
           name: 'other'
@@ -102,7 +102,7 @@ module.exports.testApiUserPatch = (
           email: 'taken'
           name: 'taken'
 
-        # success with same data
+        console.log 'success with same data'
         testHelperPatch @token, urlApiUsers(@other.id),
           email: 'other@example.com'
           name: 'other'
@@ -115,7 +115,7 @@ module.exports.testApiUserPatch = (
         test.equal response.body.email, 'other@example.com'
         test.equal response.body.rights, ''
 
-        # success with different data
+        console.log 'success with different data'
         testHelperPatch @token, urlApiUsers(@other.id),
           email: 'otherchanged@example.com'
           name: 'otherchanged'
@@ -129,13 +129,13 @@ module.exports.testApiUserPatch = (
         test.equal response.body.email, 'otherchanged@example.com'
         test.equal response.body.rights, 'canAccessEverything'
 
-        # unprivileged
+        console.log 'unprivileged'
         testHelperPatch @token, urlApiUsers(@another.id)
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        # privileged
+        console.log 'privileged'
         testHelperGrantUserRights 'operator', ["canUpdateUsers()"]
       .then ->
 
@@ -151,7 +151,7 @@ module.exports.testApiUserPatch = (
         test.equal response.body.email, 'another@example.com'
         test.equal response.body.rights, ''
 
-        # privileged but not found
+        console.log 'privileged but not found'
         testHelperPatch @token, urlApiUsers(100),
           email: 'yetanother@example.com'
           name: 'yetanother'

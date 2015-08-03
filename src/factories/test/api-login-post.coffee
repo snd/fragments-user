@@ -7,15 +7,17 @@ module.exports.testApiLoginPost = (
   shutdown
   urlApiLogin
   urlApiCurrentUser
+  console
 ) ->
   (test) ->
     pgDropCreateMigrate()
       .bind({})
       .then ->
+
         command_serve()
       .then ->
 
-        # unprocessable no body
+        console.log 'unprocessable no body'
         testHelperPost null, urlApiLogin(), null
       .then (response) ->
         test.equal response.statusCode, 422
@@ -23,7 +25,7 @@ module.exports.testApiLoginPost = (
           identifier: 'must not be null or undefined'
           password: 'must not be null or undefined'
 
-        # unprocessable
+        console.log 'unprocessable'
         testHelperPost null, urlApiLogin(),
           identifier: 'operator'
           password: 'top'
@@ -32,7 +34,7 @@ module.exports.testApiLoginPost = (
         test.deepEqual response.body,
           password: 'must be at least 8 characters long'
 
-        # not found for email or username
+        console.log 'not found for email or username'
         testHelperPost null, urlApiLogin(),
           identifier: 'operator'
           password: 'topsecret'
@@ -40,11 +42,11 @@ module.exports.testApiLoginPost = (
         test.equal response.statusCode, 422
         test.equal response.body, 'invalid identifier (username or email) or password'
 
-        # insert a user so we can login
+        console.log 'insert a user so we can login'
         testHelperInsertUser('operator', 'operator@example.com', 'topsecret')
       .then ->
 
-        # wrong password
+        console.log 'wrong password'
         testHelperPost null, urlApiLogin(),
           identifier: 'operator'
           password: 'opensesame'
@@ -52,7 +54,7 @@ module.exports.testApiLoginPost = (
         test.equal response.statusCode, 422
         test.equal response.body, 'invalid identifier (username or email) or password'
 
-        # login with email
+        console.log 'login with email'
         testHelperPost null, urlApiLogin(),
           identifier: 'operator@example.com'
           password: 'topsecret'
@@ -64,7 +66,7 @@ module.exports.testApiLoginPost = (
         test.equal response.body.user.rights, ''
         test.equal response.body.user.password, null
 
-        # token is valid
+        console.log 'token is valid'
         testHelperGet response.body.token, urlApiCurrentUser()
       .then (response) ->
         test.equal response.statusCode, 200
@@ -73,7 +75,7 @@ module.exports.testApiLoginPost = (
         test.equal response.body.rights, ''
         test.equal response.body.password, null
 
-        # login with name
+        console.log 'login with name'
         testHelperPost null, urlApiLogin(),
           identifier: 'operator'
           password: 'topsecret'
@@ -85,7 +87,7 @@ module.exports.testApiLoginPost = (
         test.equal response.body.user.rights, ''
         test.equal response.body.user.password, null
 
-        # token is valid
+        console.log 'token is valid'
         testHelperGet response.body.token, urlApiCurrentUser()
       .then (response) ->
         test.equal response.statusCode, 200

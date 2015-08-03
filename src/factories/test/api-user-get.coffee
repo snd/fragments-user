@@ -31,24 +31,24 @@ module.exports.testApiUserGet = (
         command_serve()
       .then ->
 
-        # unauthenticated
+        console.log 'unauthenticated'
         testHelperGet null, urlApiUsers(@other.id)
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenTokenRequired
 
-        # authenticate
+        console.log 'authenticate'
         testHelperLogin(test, 'operator', 'topsecret')
       .then (token) ->
         @token = token
 
-        # unprivileged
+        console.log 'unprivileged'
         testHelperGet @token, urlApiUsers(@other.id)
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        # wrong privilege
+        console.log 'wrong privilege'
         testHelperGrantUserRights 'operator', ['canReadUsers(100)']
       .then ->
         testHelperGet @token, urlApiUsers(@other.id)
@@ -56,7 +56,7 @@ module.exports.testApiUserGet = (
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        # single user privilege
+        console.log 'single user privilege'
         testHelperGrantUserRights 'operator', ["canReadUsers(#{@other.id})"]
       .then ->
         testHelperGet @token, urlApiUsers(@other.id)
@@ -65,13 +65,13 @@ module.exports.testApiUserGet = (
         test.equal response.body.id, @other.id
         test.equal response.body.password, null
 
-        # unprivileged
+        console.log 'unprivileged'
         testHelperGet @token, urlApiUsers(@another.id)
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        # privileged
+        console.log 'privileged'
         testHelperGrantUserRights 'operator', ["canReadUsers()"]
       .then ->
         testHelperGet @token, urlApiUsers(@another.id)
@@ -80,7 +80,7 @@ module.exports.testApiUserGet = (
         test.equal response.body.id, @another.id
         test.equal response.body.password, null
 
-        # privileged but not found
+        console.log 'privileged but not found'
         testHelperGet @token, urlApiUsers(100)
       .then (response) ->
         test.equal response.statusCode, 404

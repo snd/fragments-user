@@ -35,24 +35,24 @@ module.exports.testApiUserDelete = (
         command_serve()
       .then ->
 
-        # unauthenticated
+        console.log 'unauthenticated'
         testHelperDelete null, urlApiUsers(@other.id)
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenTokenRequired
 
-        # authenticate
+        console.log 'authenticate'
         testHelperLogin(test, 'operator', 'topsecret')
       .then (token) ->
         @token = token
 
-        # unprivileged
+        console.log 'unprivileged'
         testHelperDelete @token, urlApiUsers(@other.id)
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        # wrong privilege
+        console.log 'wrong privilege'
         testHelperGrantUserRights 'operator', ['canDeleteUsers(100)']
       .then ->
         testHelperDelete @token, urlApiUsers(@other.id)
@@ -60,37 +60,37 @@ module.exports.testApiUserDelete = (
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        # single user privilege
+        console.log 'single user privilege'
         testHelperGrantUserRights 'operator', ["canDeleteUsers(#{@other.id})"]
       .then ->
         testHelperDelete @token, urlApiUsers(@other.id)
       .then (response) ->
         test.equal response.statusCode, 200
-        test.equal response.body, null
+        test.equal response.body, ''
 
         selectUser()
       .then (users) ->
         test.equal users.length, 2
 
-        # unprivileged
+        console.log 'unprivileged'
         testHelperDelete @token, urlApiUsers(@another.id)
       .then (response) ->
         test.equal response.statusCode, 403
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
-        # privileged
+        console.log 'privileged'
         testHelperGrantUserRights 'operator', ["canDeleteUsers()"]
       .then ->
         testHelperDelete @token, urlApiUsers(@another.id)
       .then (response) ->
         test.equal response.statusCode, 200
-        test.equal response.body, null
+        test.equal response.body, ''
 
         selectUser()
       .then (users) ->
         test.equal users.length, 1
 
-        # privileged but not found
+        console.log 'privileged but not found'
         testHelperDelete @token, urlApiUsers(@another.id)
       .then (response) ->
         test.equal response.statusCode, 404

@@ -49,7 +49,7 @@ module.exports.testApiUserPatch = (
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
         console.log 'wrong privilege'
-        testHelperGrantUserRights 'operator', ['canUpdateUsers(100)']
+        testHelperGrantUserRights 'operator', ['canPatchUsers(100)']
       .then ->
         testHelperPatch @token, urlApiUsers(@other.id)
       .then (response) ->
@@ -57,7 +57,7 @@ module.exports.testApiUserPatch = (
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
         console.log 'continue with single user privilege'
-        testHelperGrantUserRights 'operator', ["canUpdateUsers(#{@other.id})"]
+        testHelperGrantUserRights 'operator', ["canPatchUsers(#{@other.id})"]
       .then ->
 
         console.log 'unprocessable'
@@ -136,7 +136,7 @@ module.exports.testApiUserPatch = (
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
         console.log 'privileged'
-        testHelperGrantUserRights 'operator', ["canUpdateUsers()"]
+        testHelperGrantUserRights 'operator', ["canPatchUsers()"]
       .then ->
 
         testHelperPatch @token, urlApiUsers(@another.id),

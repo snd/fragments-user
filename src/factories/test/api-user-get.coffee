@@ -49,7 +49,7 @@ module.exports.testApiUserGet = (
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
         console.log 'wrong privilege'
-        testHelperGrantUserRights 'operator', ['canReadUsers(100)']
+        testHelperGrantUserRights 'operator', ['canGetUsers(100)']
       .then ->
         testHelperGet @token, urlApiUsers(@other.id)
       .then (response) ->
@@ -57,7 +57,7 @@ module.exports.testApiUserGet = (
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
         console.log 'single user privilege'
-        testHelperGrantUserRights 'operator', ["canReadUsers(#{@other.id})"]
+        testHelperGrantUserRights 'operator', ["canGetUsers(#{@other.id})"]
       .then ->
         testHelperGet @token, urlApiUsers(@other.id)
       .then (response) ->
@@ -72,7 +72,7 @@ module.exports.testApiUserGet = (
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
         console.log 'privileged'
-        testHelperGrantUserRights 'operator', ["canReadUsers()"]
+        testHelperGrantUserRights 'operator', ["canGetUsers()"]
       .then ->
         testHelperGet @token, urlApiUsers(@another.id)
       .then (response) ->

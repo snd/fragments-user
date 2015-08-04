@@ -46,7 +46,7 @@ module.exports.testApiUsersPost = (
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
         console.log 'continue with privileged'
-        testHelperGrantUserRights('operator', ['canCreateUsers'])
+        testHelperGrantUserRights('operator', ['canPostUsers'])
       .then ->
 
         console.log 'unprocessable'
@@ -110,12 +110,12 @@ module.exports.testApiUsersPost = (
           email: 'another@example.com'
           name: 'another'
           password: 'topsecret'
-          rights: 'canCreateUsers'
+          rights: 'canPostUsers'
       .then (response) ->
         test.equal response.statusCode, 201
         test.equal response.body.email, 'another@example.com'
         test.equal response.body.name, 'another'
-        test.equal response.body.rights, 'canCreateUsers'
+        test.equal response.body.rights, 'canPostUsers'
         test.equal response.headers.location, urlApiUsers(response.body.id)
 
       .finally ->

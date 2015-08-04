@@ -44,7 +44,7 @@ module.exports.testApiUsersGet = (
         test.equal response.body, errorMessageForEndForbiddenInsufficientRights
 
         console.log 'make privileged'
-        testHelperGrantUserRights 'operator', ['canReadUsers']
+        testHelperGrantUserRights 'operator', ['canGetUsers']
       .then ->
 
         console.log 'unprocessable'

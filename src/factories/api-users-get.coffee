@@ -11,14 +11,14 @@ module.exports.apiUsersGet = (
     endForbiddenTokenRequired
     endForbiddenInsufficientRights
     endUnprocessableJSON
-    canReadUsers
+    canGetUsers
     omitPassword
     currentUser
     _
   ) ->
     unless currentUser?
       return endForbiddenTokenRequired()
-    unless canReadUsers()
+    unless canGetUsers()
       return endForbiddenInsufficientRights()
 
     sql = userTable

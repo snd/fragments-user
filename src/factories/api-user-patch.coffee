@@ -3,7 +3,7 @@ module.exports.apiUserPatch = (
   PATCH
 ) ->
   PATCH urlApiUsers(':id'), (
-    canUpdateUsers
+    canPatchUsers
     currentUser
     endForbiddenTokenRequired
     endForbiddenInsufficientRights
@@ -18,7 +18,7 @@ module.exports.apiUserPatch = (
   ) ->
     unless currentUser?
       return endForbiddenTokenRequired()
-    unless canUpdateUsers() or canUpdateUsers(params.id)
+    unless canPatchUsers() or canPatchUsers(params.id)
       return endForbiddenInsufficientRights()
     validateUserUpdate(body, params.id).then (errors) ->
       if errors?

@@ -10,12 +10,12 @@ module.exports.apiUserGet = (
     params
     endJSON
     end404
-    canReadUsers
+    canGetUsers
     omitPassword
   ) ->
     unless currentUser?
       return endForbiddenTokenRequired()
-    unless canReadUsers() or canReadUsers(params.id)
+    unless canGetUsers() or canGetUsers(params.id)
       return endForbiddenInsufficientRights()
     firstUserWhereId(params.id).then (user) ->
       if user?

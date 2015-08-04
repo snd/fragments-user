@@ -3,7 +3,7 @@ module.exports.apiUsersPost = (
   POST
 ) ->
   POST urlApiUsers(), (
-    canCreateUsers
+    canPostUsers
     endForbiddenTokenRequired
     endForbiddenInsufficientRights
     setHeaderLocation
@@ -18,7 +18,7 @@ module.exports.apiUsersPost = (
   ) ->
     unless currentUser?
       return endForbiddenTokenRequired()
-    unless canCreateUsers()
+    unless canPostUsers()
       return endForbiddenInsufficientRights()
     validateUserInsert(body).then (errors) ->
       if errors?

@@ -48,11 +48,14 @@ module.exports.testHelperRequest = (
     # console.log url
     options =
       method: method
+      headers: {}
     if body?
       options.body = body
+      if body is Object(body)
+        options.body = JSON.stringify body
+        options.headers['content-type'] = 'application/json; charset=utf-8'
     if token?
-      options.headers =
-        authorization: "Bearer #{token}"
+      options.headers.authorization = "Bearer #{token}"
     Promise.resolve(got(url, options))
       .catch got.HTTPError, (err) ->
         return err.response

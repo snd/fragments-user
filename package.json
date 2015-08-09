@@ -38,6 +38,7 @@
     "faker": "3.0.1",
     "got": "4.1.1",
     "hinoki": "1.0.0-rc.3",
+    "pcom": "1.0.0-alpha.1",
     "siv": "1.0.0-alpha.1",
     "waechter": "1.0.0-alpha.6"
   },

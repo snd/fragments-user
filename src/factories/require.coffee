@@ -9,3 +9,6 @@ module.exports.siv = ->
 
 module.exports.waechter = ->
   require 'waechter'
+
+module.exports.pcom = ->
+  require 'pcom'

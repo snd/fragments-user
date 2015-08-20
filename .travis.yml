@@ -1,7 +1,8 @@
 language: node_js
 node_js:
     - "0.12"
-    - iojs
+    - "iojs-2"
+    - "iojs-3"
 script: npm test
 env:
   global:
@@ -17,3 +18,4 @@ env:
     - JWT_SIGNING_SECRET='super secret jwt signing secret'
 addons:
   postgresql: "9.4"
+sudo: false

@@ -45,7 +45,7 @@
   "devDependencies": {
     "coffee-script": "1.9.3",
     "nodeunit": "0.9.1",
-    "fragments": "1.0.0-beta.5",
+    "fragments": "1.0.0-beta.8",
     "fragments-postgres": "1.0.0-beta.8"
   },
   "scripts": {

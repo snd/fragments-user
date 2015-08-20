@@ -1,0 +1,642 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for lib/factories/command.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../prettify.css">
+    <link rel="stylesheet" href="../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header medium">
+    <h1>Code coverage report for <span class="entity">lib/factories/command.js</span></h1>
+    <h2>
+        Statements: <span class="metric">63.64% <small>(77 / 121)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">42.86% <small>(15 / 35)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">69.77% <small>(30 / 43)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">63.64% <small>(77 / 121)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">lib/factories/</a> &#187; command.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">module.exports.command_users = function(APPLICATION) {
+  return function(optionalId) {
+    return APPLICATION(function(selectUser, firstUserWhereId, shutdown, omitPassword, _) {
+      var promise;
+      promise = optionalId ? firstUserWhereId(optionalId) : selectUser();
+      return promise.bind({}).then(function(results) {
+        return this.results = omitPassword(results);
+      })["finally"](function() {
+        return shutdown();
+      }).then(function() {
+        if (Array.isArray(this.results)) {
+          console.log('users:');
+          console.log(this.results);
+        } else <span class="missing-if-branch" title="else path not taken" >E</span>if (this.results) {
+          console.log('user:');
+          console.log(this.results);
+        } else {
+<span class="cstat-no" title="statement not covered" >          console.log("no user with id `" + optionalId + "`");</span>
+        }
+        console.log('OK');
+        return this.results;
+      });
+    });
+  };
+};
+&nbsp;
+module.exports.command_users.__help = "[optional-user-id] - show all users or just the user with `optional-user-id` (if given)";
+&nbsp;
+module.exports.command_users_insert = function(APPLICATION) {
+  return function(name, email, password) {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (!((name != null) &amp;&amp; (email != null) &amp;&amp; (password != null))) {
+<span class="cstat-no" title="statement not covered" >      console.log("Usage: ... " + module.exports.command_users_insert.__help);</span>
+<span class="cstat-no" title="statement not covered" >      return;</span>
+    }
+    return APPLICATION(function(insertUser, shutdown, omitPassword) {
+      var user;
+      user = {
+        name: name,
+        email: email,
+        password: password,
+        rights: ''
+      };
+      return insertUser(user).bind({}).then(function(inserted) {
+        return this.inserted = omitPassword(inserted);
+      })["finally"](function() {
+        return shutdown();
+      }).then(function() {
+        console.log("inserted user with id `" + this.inserted.id + "`:");
+        console.log(this.inserted);
+        console.log('OK');
+        return this.inserted;
+      });
+    });
+  };
+};
+&nbsp;
+module.exports.command_users_insert.__help = '{name} {email} {password} - insert user';
+&nbsp;
+module.exports.command_users_delete = function(APPLICATION) {
+  return function(id) {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (id == null) {
+<span class="cstat-no" title="statement not covered" >      console.log("Usage: ... " + module.exports.command_users_delete.__help);</span>
+<span class="cstat-no" title="statement not covered" >      return;</span>
+    }
+    return APPLICATION(function(deleteUserWhereId, shutdown, omitPassword) {
+      return deleteUserWhereId(id).bind({}).then(function(deletedUsers) {
+        return this.user = omitPassword(deletedUsers[0]);
+      })["finally"](function() {
+        return shutdown();
+      }).then(function() {
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (this.user) {
+          console.log("deleted user with id `" + id + "`:");
+          console.log(this.user);
+        } else {
+<span class="cstat-no" title="statement not covered" >          console.log("no user with id `" + id + "`");</span>
+        }
+        console.log('OK');
+        return this.user;
+      });
+    });
+  };
+};
+&nbsp;
+module.exports.command_users_delete.__help = "{user-id} - delete user with `user-id`";
+&nbsp;
+module.exports.command_rights = function(APPLICATION) {
+  return function(id) {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (id == null) {
+<span class="cstat-no" title="statement not covered" >      console.log("Usage: ... " + module.exports.command_rights.__help);</span>
+<span class="cstat-no" title="statement not covered" >      return;</span>
+    }
+    return APPLICATION(function(firstUserWhereId, rightsStringToRightsArray, shutdown) {
+      return firstUserWhereId(id).bind({}).then(function(user) {
+        return this.user = user;
+      })["finally"](function() {
+        return shutdown();
+      }).then(function() {
+        var rights;
+        <span class="missing-if-branch" title="else path not taken" >E</span>if (this.user != null) {
+          rights = rightsStringToRightsArray(this.user.rights);
+          console.log("rights of user with id `" + id + "`:");
+          console.log(rights);
+          console.log('OK');
+          return rights;
+        } else {
+<span class="cstat-no" title="statement not covered" >          console.log("no user with id `" + id + "`");</span>
+<span class="cstat-no" title="statement not covered" >          console.log('OK');</span>
+<span class="cstat-no" title="statement not covered" >          return null;</span>
+        }
+      });
+    });
+  };
+};
+&nbsp;
+module.exports.command_rights.__help = "{user-id} - list the rights of user with `user-id`";
+&nbsp;
+module.exports.command_rights_insert = <span class="fstat-no" title="function not covered" >function(APPLICATION) {</span>
+<span class="cstat-no" title="statement not covered" >  return <span class="fstat-no" title="function not covered" >function(id, right) {</span></span>
+<span class="cstat-no" title="statement not covered" >    if (!((id != null) &amp;&amp; (right != null))) {</span>
+<span class="cstat-no" title="statement not covered" >      console.log("Usage: ... " + module.exports.command_rights_insert.__help);</span>
+<span class="cstat-no" title="statement not covered" >      return;</span>
+    }
+<span class="cstat-no" title="statement not covered" >    return APPLICATION(<span class="fstat-no" title="function not covered" >function(grantUserRightWhereId, shutdown, omitPassword) {</span></span>
+<span class="cstat-no" title="statement not covered" >      return grantUserRightWhereId(right, id).bind({}).then(<span class="fstat-no" title="function not covered" >function(user) {</span></span>
+<span class="cstat-no" title="statement not covered" >        return this.user = omitPassword(user);</span>
+      })["finally"](<span class="fstat-no" title="function not covered" >function() {</span>
+<span class="cstat-no" title="statement not covered" >        return shutdown();</span>
+      }).then(<span class="fstat-no" title="function not covered" >function() {</span>
+<span class="cstat-no" title="statement not covered" >        if (this.user != null) {</span>
+<span class="cstat-no" title="statement not covered" >          console.log("granted right `" + right + "` to user with id `" + id + "`:");</span>
+<span class="cstat-no" title="statement not covered" >          console.log(this.user);</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >          console.log("no user with id `" + id + "` or user already has right `" + right + "`");</span>
+        }
+<span class="cstat-no" title="statement not covered" >        console.log('OK');</span>
+<span class="cstat-no" title="statement not covered" >        return this.user;</span>
+      });
+    });
+  };
+};
+&nbsp;
+module.exports.command_rights_insert.__help = "{user-id} {right} - grant `right` to user with `id`";
+&nbsp;
+module.exports.command_rights_delete = <span class="fstat-no" title="function not covered" >function(APPLICATION) {</span>
+<span class="cstat-no" title="statement not covered" >  return <span class="fstat-no" title="function not covered" >function(id, right) {</span></span>
+<span class="cstat-no" title="statement not covered" >    if (!((id != null) &amp;&amp; (right != null))) {</span>
+<span class="cstat-no" title="statement not covered" >      console.log("Usage: ... " + module.exports.command_rights_delete.__help);</span>
+<span class="cstat-no" title="statement not covered" >      return;</span>
+    }
+<span class="cstat-no" title="statement not covered" >    return APPLICATION(<span class="fstat-no" title="function not covered" >function(revokeUserRightWhereId, shutdown, omitPassword) {</span></span>
+<span class="cstat-no" title="statement not covered" >      return revokeUserRightWhereId(right, id).bind({}).then(<span class="fstat-no" title="function not covered" >function(user) {</span></span>
+<span class="cstat-no" title="statement not covered" >        return this.user = omitPassword(user);</span>
+      })["finally"](<span class="fstat-no" title="function not covered" >function() {</span>
+<span class="cstat-no" title="statement not covered" >        return shutdown();</span>
+      }).then(<span class="fstat-no" title="function not covered" >function() {</span>
+<span class="cstat-no" title="statement not covered" >        if (this.user != null) {</span>
+<span class="cstat-no" title="statement not covered" >          console.log("removed right `" + right + "` from user with id `" + id + "`:");</span>
+<span class="cstat-no" title="statement not covered" >          console.log(this.user);</span>
+        } else {
+<span class="cstat-no" title="statement not covered" >          console.log("no user with id `" + id + "` or user already doesn't have right `" + right + "`");</span>
+        }
+<span class="cstat-no" title="statement not covered" >        console.log('OK');</span>
+<span class="cstat-no" title="statement not covered" >        return this.user;</span>
+      });
+    });
+  };
+};
+&nbsp;
+module.exports.command_rights_delete.__help = "{user-id} {right} - revoke `right` from user with `id`";
+&nbsp;
+module.exports.command_fake_users = function(APPLICATION) {
+  return function(count) {
+    var printUsage;
+    printUsage = <span class="fstat-no" title="function not covered" >function() {</span>
+<span class="cstat-no" title="statement not covered" >      return console.log("Usage: ... " + module.exports.command_fake_users.__help);</span>
+    };
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (count == null) {
+<span class="cstat-no" title="statement not covered" >      printUsage();</span>
+<span class="cstat-no" title="statement not covered" >      return;</span>
+    }
+    count = parseInt(count, 10);
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (isNaN(count)) {
+<span class="cstat-no" title="statement not covered" >      printUsage();</span>
+<span class="cstat-no" title="statement not covered" >      return;</span>
+    }
+    return APPLICATION(function(insertFakeUsers, shutdown, omitPassword) {
+      return insertFakeUsers(count).bind({}).then(function(users) {
+        return this.users = omitPassword(users);
+      })["finally"](function() {
+        return shutdown();
+      }).then(function() {
+        console.log('OK');
+        return this.users;
+      });
+    });
+  };
+};
+&nbsp;
+module.exports.command_fake_users.__help = "{count} - insert `count` fake users";
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Aug 20 2015 17:18:33 GMT+0200 (CEST)</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

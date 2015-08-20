@@ -7,6 +7,7 @@
 [![ALPHA](http://img.shields.io/badge/Stability-ALPHA-orange.svg?style=flat)]()
 [![NPM Package](https://img.shields.io/npm/v/fragments-user.svg?style=flat)](https://www.npmjs.org/package/fragments-user)
 [![Build Status](https://travis-ci.org/snd/fragments-user.svg?branch=master)](https://travis-ci.org/snd/fragments-user/branches)
+[![coverage-86%](http://img.shields.io/badge/coverage-86%-brightgreen.svg?style=flat)](https://rawgit.com/snd/fragments-user/master/coverage/lcov-report/index.html)
 [![Dependencies](https://david-dm.org/snd/fragments-user.svg)](https://david-dm.org/snd/fragments-user)
 
 **have a token-auth protected API running within minutes with [fragments](https://github.com/snd/fragments)**

@@ -46,13 +46,14 @@
     "coffee-script": "1.9.3",
     "nodeunit": "0.9.1",
     "fragments": "1.0.0-beta.8",
-    "fragments-postgres": "1.0.0-beta.8"
+    "fragments-postgres": "1.0.0-beta.8",
+    "istanbul": "0.3.18"
   },
   "scripts": {
     "compile": "coffee --no-header --bare --compile --output lib src",
     "prepublish": "npm run compile",
     "pretest": "npm run compile",
-    "test": "nodeunit test/*.coffee"
+    "test": "istanbul cover nodeunit test/*.coffee"
   },
   "main": "lib/fragments-user"
 }

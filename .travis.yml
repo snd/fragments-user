@@ -4,12 +4,6 @@ node_js:
     - "iojs-2"
     - "iojs-3"
 script: npm test
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - g++-4.8
 env:
   global:
     - CXX=g++-4.8
@@ -25,4 +19,9 @@ env:
     - JWT_SIGNING_SECRET='super secret jwt signing secret'
 addons:
   postgresql: "9.4"
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
 sudo: false
